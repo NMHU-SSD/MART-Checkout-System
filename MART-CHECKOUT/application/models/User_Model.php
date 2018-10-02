@@ -56,18 +56,8 @@ class User_Model extends CI_Model{
 
       //if role is a manager or assistant we need a password
       //If you want students to login delete /* */ below
-    // if($userArray[1] == 'Manager' || $userArray[1] == 'Assistant' /*  || $userArray[1] == 'Student Employee' */){
-    //     if(password_verify($banner_password, $hashed_pwd)){
-    //       $userData = array(
-    //         'user_id' => $banner_id,
-    //         'user_name' => $userArray[0],
-    //         'user_role' => $userArray[1],
-    //         'logged_in'=> TRUE
-    //       );
-    //       return $userData;
-    //     }
-    //   }else
-      if($userArray[1] == 'Student Employee' || $userArray[1] == 'Manager' || $userArray[1] == 'Assistant' ){//if role is student log them in
+    if($userArray[1] == 'Manager' || $userArray[1] == 'Assistant'  || $userArray[1] == 'Student Employee'){
+      if(password_verify($banner_password, $hashed_pwd)){
         $userData = array(
           'user_id' => $banner_id,
           'user_name' => $userArray[0],
@@ -75,59 +65,71 @@ class User_Model extends CI_Model{
           'logged_in'=> TRUE
         );
         return $userData;
-      } else {
-        return false;
       }
+    }
+    else if($userArray[1] == 'Student Employee'){//if role is student log them in
+      $userData = array(
+        'user_id' => $banner_id,
+        'user_name' => $userArray[0],
+        'user_role' => $userArray[1],
+        'logged_in'=> TRUE
+      );
+      return $userData;
     }else{
       return false;
     }
+  }else{
+    return false;
   }
+}
 
-  //get enum roles from users table
-  public function get_roles(){
+//get enum roles from users table
+public function get_roles(){
 
-    $row = $this->db->query("SHOW COLUMNS FROM users LIKE 'role' ")->row()->Type;
-    $regex = "/'(.*?)'/";
-    preg_match_all( $regex , $row, $enum_array );
-    $enum_fields = $enum_array[1];
-    foreach ($enum_fields as $key=>$value)
-    {
-      $enums[$value] = $value;
-    }
-    return $enums;
+  $row = $this->db->query("SHOW COLUMNS FROM users LIKE 'role' ")->row()->Type;
+  $regex = "/'(.*?)'/";
+  preg_match_all( $regex , $row, $enum_array );
+  $enum_fields = $enum_array[1];
+  foreach ($enum_fields as $key=>$value)
+  {
+    $enums[$value] = $value;
   }
+  return $enums;
+}
 
-  //get navigation based on current user role
-  public function get_navigation($role){
+//get navigation based on current user role
+public function get_navigation($role){
 
-    // "link name"=>"controller"
+  // "link name"=>"controller"
+  if ($role == "Manager"){
 
-    if ($role == "Manager"){
-
-      $nav_items['nav_items'] = array(
-        'Employees'=>'employees',
-        'Students'=>'students',
-        'Equipment' => 'equipment',
-        'Reservations' => 'reservations'
-      );
-    } else if ($role == "Assistant") {
-      $nav_items['nav_items'] = array(
-        'Equipment' => 'equipment',
-        'Reservations' => 'reservations'
-      );
-    } else if ($role == "Student Employee") {
-      $nav_items['nav_items'] = array(
-        'Reservations' => 'reservations'
-      );
-    }
-    return $nav_items;
+    $nav_items['nav_items'] = array(
+      'Employees'=>'employees',
+      'Students'=>'students',
+      'Clearance'=>'clearance',
+      'Equipment' => 'equipment',
+      'Reservations' => 'reservations'
+    );
+  } else if ($role == "Assistant") {
+    $nav_items['nav_items'] = array(
+      'Equipment' => 'equipment',
+      'Reservations' => 'reservations'
+    );
+  } else if ($role == "Student Employee") {
+    $nav_items['nav_items'] = array(
+      'Reservations' => 'reservations'
+    );
   }
+  return $nav_items;
+}
 
 
-  public function password_reset($banner_id){
-
-  }
-
+public function password_reset($banner_id, $banner_password){
+  //"update 'users' set password=$banner_password where banner_id=$banner_id"
+  $this->db->where('banner_id', $banner_id);
+  $this->db->update('users', array('password' => $banner_password));
+  return true;
+}
 }
 
 ?>

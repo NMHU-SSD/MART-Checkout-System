@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.7
+-- version 4.7.0
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:8889
--- Generation Time: Sep 04, 2018 at 07:07 PM
--- Server version: 5.6.38
--- PHP Version: 7.2.1
+-- Host: localhost:3306
+-- Generation Time: Oct 02, 2018 at 09:53 PM
+-- Server version: 5.6.34-log
+-- PHP Version: 7.1.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -27,8 +29,6 @@ USE `mart_checkout`;
 --
 -- Table structure for table `approvals`
 --
--- Creation: May 08, 2018 at 12:40 AM
---
 
 DROP TABLE IF EXISTS `approvals`;
 CREATE TABLE `approvals` (
@@ -44,8 +44,6 @@ CREATE TABLE `approvals` (
 
 --
 -- Table structure for table `checked_out`
---
--- Creation: May 08, 2018 at 12:40 AM
 --
 
 DROP TABLE IF EXISTS `checked_out`;
@@ -63,8 +61,6 @@ CREATE TABLE `checked_out` (
 --
 -- Table structure for table `clearance`
 --
--- Creation: May 08, 2018 at 12:40 AM
---
 
 DROP TABLE IF EXISTS `clearance`;
 CREATE TABLE `clearance` (
@@ -75,12 +71,18 @@ CREATE TABLE `clearance` (
   `class` varchar(5000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `clearance`
+--
+
+INSERT INTO `clearance` (`id`, `level`, `barcode`, `description`, `class`) VALUES
+(1, 'Photo 2', '654321', 'Camera', 'Photography 1 and Photography 2'),
+(2, 'Photo 1', '951', 'Camera only', 'Photography 1');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `equipment`
---
--- Creation: May 08, 2018 at 04:37 AM
 --
 
 DROP TABLE IF EXISTS `equipment`;
@@ -94,12 +96,19 @@ CREATE TABLE `equipment` (
   `status` enum('out of commission','available for checkout','reserved','available after class','out for repair') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `equipment`
+--
+
+INSERT INTO `equipment` (`barcode`, `name`, `description`, `clearance`, `notes`, `account_purchased_from`, `status`) VALUES
+('123456', 'Camera 1', 'None', 'Photo 1', 'Camera Only', '', 'available for checkout'),
+('753159', 'Cannon Camera', 'Camera only', '1', 'camera with stand', '', 'reserved'),
+('951', 'Cannon Camera', '', '0,1', '', '', 'out of commission');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `reservations`
---
--- Creation: May 08, 2018 at 09:12 PM
 --
 
 DROP TABLE IF EXISTS `reservations`;
@@ -126,8 +135,6 @@ INSERT INTO `reservations` (`reservation_id`, `barcode`, `student_id`, `date_pic
 --
 -- Table structure for table `students`
 --
--- Creation: May 08, 2018 at 03:04 AM
---
 
 DROP TABLE IF EXISTS `students`;
 CREATE TABLE `students` (
@@ -146,22 +153,24 @@ CREATE TABLE `students` (
 --
 -- Table structure for table `users`
 --
--- Creation: May 08, 2018 at 12:40 AM
---
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `banner_id` varchar(255) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `role` enum('Manager','Assistant','Student Employee') NOT NULL
+  `role` enum('Manager','Assistant','Student Employee') NOT NULL,
+  `password` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`banner_id`, `name`, `role`) VALUES
-('1234', 'Manager', 'Manager');
+INSERT INTO `users` (`banner_id`, `name`, `role`, `password`) VALUES
+('1010', 'test1', 'Manager', '$2y$10$0g0JPR11vLB0iaY.dDpz.e2gv8JVyw8Sv1PA6nCqJxx5qQjsJxeZO'),
+('1234', 'Manager', 'Manager', '$2y$10$ad5SemSTQUqkJA0YPbEYw.cS3z/AkwbQmP8uanPg6TXFZQ5BMHsBu'),
+('2020', 'test2', 'Student Employee', '$2y$10$GNpgFUYur59tgNDgzohfm.WH1w50GqxiqtVfIREksPvJVNVCvyG76'),
+('97531', 'Student Name', 'Student Employee', '$2y$10$3pDY7oNFxESm3Yo2Hm8g.ugXdy1mAi/nNfx88Tzujo1iGH3jj.jdW');
 
 --
 -- Indexes for dumped tables
@@ -221,18 +230,16 @@ ALTER TABLE `users`
 --
 ALTER TABLE `checked_out`
   MODIFY `checkout_id` int(11) NOT NULL AUTO_INCREMENT;
-
 --
 -- AUTO_INCREMENT for table `clearance`
 --
 ALTER TABLE `clearance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
