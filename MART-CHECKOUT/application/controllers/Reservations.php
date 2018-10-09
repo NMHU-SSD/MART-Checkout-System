@@ -21,6 +21,7 @@ class Reservations extends CI_Controller {
       public function index() { 
 
          $data['records'] = $this->Reservations_Model->get_reservations();
+         
 		 
 		 $this->load->view('templates/header');
          $nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);

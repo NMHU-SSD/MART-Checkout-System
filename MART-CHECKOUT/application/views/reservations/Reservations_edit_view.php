@@ -80,8 +80,7 @@
 				<span class = "text-danger"><?php echo form_error('date_due');?></span>
     		</div> -->
 			
-			
-    		<div class="form-group">
+    		<div class="form-group"> 
 				<label for="notes" class="control-label">Notes</label>
 				<?php
 				echo form_textarea(array('id'=>'notes','name'=>'notes', 'value'=>$records->notes,'class'=>'form-control')); 

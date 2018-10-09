@@ -37,14 +37,13 @@
                 echo "<td>".$r->date_time."</td>";
                	echo "<td><a href = '".base_url()."reservations/edit/"
                   .$r->barcode."'>Edit</a></td>"; 
-				
+				 
 				$delete = base_url().'reservations/delete/'.$r->barcode;
 				$message = "the reservation for ".$r->barcode." on the following dates: ".$r->date_pickup." - ".$r->date_due;
 				
                	echo '<th scope="col"><a href="" data-href="'.$delete.'"
                   data-toggle="modal" data-target="#confirm-delete" data-message="'.$message.'" >Delete</a></th>'; 
                	echo "<tr>"; 
-				
 			}
 		?>
 		</tbody>
