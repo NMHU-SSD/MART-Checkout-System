@@ -1,5 +1,9 @@
 <div class="container">
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 8d57aa44f3a2c9d650259698298be981bea2dcff
 	<div class="row pl-2 pr-2">
 		<div class="col-sm-6 col-lg-3 ml-auto mr-auto mt-5">
 
@@ -16,6 +20,7 @@
 						<span class="input-group-text" id="basic-addon1">@</span>
 					</div>
 
+<<<<<<< HEAD
 					<input class="form-control" id="form_id" name="form_id" placeholder="Enter ID" type="text" autocomplete="off"  aria-describedby="basic-addon1" value="<?php echo set_value('form_id'); ?>" />
 
 				</div>
@@ -46,8 +51,20 @@
 </div>
 </div>
 </div>
+=======
+					<input class="form-control" id="form_id" name="form_id" placeholder="Enter ID" type="text"  aria-describedby="basic-addon1" value="<?php echo set_value('form_id'); ?>" />
 
+				</div>
 
+				<!-- Only used for managers -->
+				<input class="form-control" id="form_password" name="form_password" placeholder="Enter Password" type="text"  aria-describedby="basic-addon1" value="<?php echo set_value('form_password'); ?>" />
+>>>>>>> 8d57aa44f3a2c9d650259698298be981bea2dcff
+
+			</div>
+		</div>
+	</div>
+
+<<<<<<< HEAD
 <script>
 $(function () {
 	$("#chkPassword").click(function () {
@@ -59,3 +76,16 @@ $(function () {
 	});
 });
 </script>
+=======
+	<span class="text-danger"><?php echo form_error('form_id'); ?></span>
+
+	<!-- login button -->
+	<div class="form-group">
+		<input type="submit" id="btn_login" name="btn_login" value="Login" class="btn btn-primary btn-block"/>
+	</div>
+	<?php echo form_close(); ?>
+
+</div>
+</div>
+</div>
+>>>>>>> 8d57aa44f3a2c9d650259698298be981bea2dcff
