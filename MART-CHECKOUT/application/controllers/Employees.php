@@ -195,7 +195,7 @@ class Employees extends CI_Controller {
       $data['roles'] = $this->User_Model->get_roles();
       $data['employee'] = $this->User_Model->get_user($id);
 
-      if($_SESSION['user_role'] == 'Manager'){
+      if($_SESSION['user_role'] == 'Manager' || $_SESSION['user_role'] == 'Admin'){
         $this->load->view('employees/employees_reset_password', $data);
       }else{
         $data['employees'] = $this->User_Model->get_users();

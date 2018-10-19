@@ -5,7 +5,6 @@
 
 	<a class="btn btn-primary float-right m-2" href = "<?php echo base_url(); ?>equipment/new">New Equipment</a>
 
-
 	<table class="table table-bordered table-hover">
 		<thead>
 			<tr>
@@ -23,7 +22,6 @@
 		</thead>
 		<tbody>
 			<?php
-			// TODO: For clearance need to make call db and get clearance level
 			$i = 1;
 			foreach($records as $r) {
 				echo "<tr>";
@@ -31,7 +29,18 @@
 				echo "<td>".$r->barcode."</td>";
 				echo "<td>".$r->name."</td>";
 				echo "<td>".$r->description."</td>";
-				echo "<td>".$r->clearance."</td>";
+				$temp = "";
+				$pieces = explode(",", $r->clearance);
+				foreach($clearance as $c){
+					foreach($pieces as $p){
+						if($p == $c->id){
+							$temp .= $c->level .= " ";
+						}
+					}
+				}
+				echo "<td>".$temp."</td>";
+
+				// echo "<td>".$r->clearance."</td>";
 				echo "<td>".$r->notes."</td>";
 				echo "<td>".$r->account_purchased_from."</td>";
 				echo "<td>".$r->status."</td>";

@@ -13,8 +13,8 @@
 
         <!-- helper function to generate select form field with options -->
         <?php
-          $selected = set_value('form_role', $employee['role']);
-          echo form_dropdown('form_role', $roles, $selected);
+        $selected = set_value('form_role', $employee['role']);
+        echo form_dropdown('form_role', $roles, $selected);
         ?>
 
         <span class="text-danger"><?php echo form_error('form_role'); ?></span>
@@ -47,14 +47,14 @@
 
       <?php echo form_close(); ?>
 
-      <?php if($_SESSION['user_role'] == "Manager" || $_SESSION['user_role'] == "Assistant"){ ?>
+      <?php if($_SESSION['user_role'] == "Manager" || $_SESSION['user_role'] == "Assistant"  || $_SESSION['user_role'] == "Admin"){ ?>
         <?php echo form_open('employees/password/'.$employee['banner_id']); ?>
         <!-- Password reset button -->
         <div class="form-group">
           <input id="btn_register" name="btn_register" type="submit" class="btn btn-primary" value="Reset Password" />
         </div>
         <?php echo form_close(); ?>
-    <?php } ?>
+      <?php } ?>
     </div>
   </div>
 

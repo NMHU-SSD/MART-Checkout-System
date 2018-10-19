@@ -24,7 +24,7 @@ class Equipment extends CI_Controller {
 		$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 		$this->load->view('templates/navigation', $nav_items);
 		$data['records'] = $this->Equipment_Model->get_equipment();
-		// TODO: make call to clearanceDB so we can return clearance levels
+		$data['clearance'] = $this->Clearance_Model->get_clearance();
 		$this->load->view('equipment/Equipment_view', $data);
 		$this->load->view('templates/footer');
 	}
@@ -33,8 +33,7 @@ class Equipment extends CI_Controller {
 		$this->load->view('templates/header');
 		$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 		$this->load->view('templates/navigation',$nav_items);
-		// TODO: add call to db for clearance levels
-		$data['levels'] = $this->Clearance_Model->get_clearance_row();
+		$data['clearance'] = $this->Clearance_Model->get_clearance();
 		$this->load->view('equipment/Equipment_add_view', $data);
 		$this->load->view('templates/footer');
 	}
@@ -42,7 +41,6 @@ class Equipment extends CI_Controller {
 
 
 	public function add() {
-
 		$this->form_validation->set_rules('barcode','barcode', 'trim|required');
 		$this->form_validation->set_rules('name','name', 'required');
 		if( is_array( $this->input->post('clearance') ) ) {
@@ -50,7 +48,6 @@ class Equipment extends CI_Controller {
 		} else {
 			$clear =  $this->input->post('clearance');
 		}
-
 
 		if($this->form_validation->run() == false){
 			$this->load->view('templates/header');
@@ -79,6 +76,7 @@ class Equipment extends CI_Controller {
 		$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 		$this->load->view('templates/navigation',$nav_items);
 		$data['records'] = $this->Equipment_Model->get_equipment_item($id);
+		$data['clearance'] = $this->Clearance_Model->get_clearance();
 		$this->load->view('equipment/Equipment_edit_view', $data);
 		$this->load->view('templates/footer');
 	}
@@ -89,7 +87,11 @@ class Equipment extends CI_Controller {
 		$this->form_validation->set_rules('barcode','barcode', 'trim|required');
 		$this->form_validation->set_rules('name','name', 'required');
 		$this->form_validation->set_rules('description','description', 'required');
-
+		if( is_array( $this->input->post('clearance') ) ) {
+			$clear =  join(",", $this->input->post('clearance'));
+		} else {
+			$clear =  $this->input->post('clearance');
+		}
 
 		if($this->form_validation->run() == false){
 			$this->load->view('templates/header');
@@ -100,7 +102,7 @@ class Equipment extends CI_Controller {
 				'barcode' => $this->input->post('barcode'),
 				'name' => $this->input->post('name'),
 				'description' => $this->input->post('description'),
-				'clearance' => $this->input->post('clearance'),
+				'clearance' => $clear,
 				'notes' => $this->input->post('notes'),
 				'account_purchased_from' => $this->input->post('account_purchased_from'),
 				'status' => $this->input->post('status')
@@ -118,7 +120,7 @@ class Equipment extends CI_Controller {
 				'barcode' => $this->input->post('barcode'),
 				'name' => $this->input->post('name'),
 				'description' => $this->input->post('description'),
-				'clearance' => $this->input->post('clearance'),
+				'clearance' => $clear,
 				'notes' => $this->input->post('notes'),
 				'account_purchased_from' => $this->input->post('account_purchased_from'),
 				'status' => $this->input->post('status')
