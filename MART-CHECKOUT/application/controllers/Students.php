@@ -28,7 +28,7 @@ class Students extends CI_Controller {
 		$this->load->view('students/Student_view',$data);
 		$this->load->view('templates/footer');
 	}
-
+	
 	public function new() {
 		$this->load->view('templates/header');
 		$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);

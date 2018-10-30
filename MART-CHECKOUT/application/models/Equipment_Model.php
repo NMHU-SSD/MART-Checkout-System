@@ -30,5 +30,19 @@ class Equipment_Model extends CI_Model {
     $this->db->where("barcode", $old_barcode);
     $this->db->update("equipment", $data);
   }
+
+  public function updateStatus($barcode){
+    $this->db->where('barcode', $barcode);
+    $this->db->update('equipment', array('status' => 'reserved'));
+    return true;
+  }
+
+  public function updateStatusfromRes($barcode){
+    $this->db->where('barcode', $barcode);
+    $this->db->update('equipment', array('status' => 'available for checkout'));
+    return true;
+  }
+
+
 }
 ?>

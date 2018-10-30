@@ -108,7 +108,8 @@ class User_Model extends CI_Model{
         'Students'=>'students',
         'Clearance'=>'clearance',
         'Equipment' => 'equipment',
-        'Reservations' => 'reservations'
+        'Reservations' => 'reservations',
+        'Faculty' => 'faculty'
       );
     } else if ($role == "Assistant") {
       $nav_items['nav_items'] = array(

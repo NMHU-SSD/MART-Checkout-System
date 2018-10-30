@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 02, 2018 at 09:53 PM
+-- Generation Time: Oct 30, 2018 at 08:12 PM
 -- Server version: 5.6.34-log
 -- PHP Version: 7.1.5
 
@@ -30,7 +30,6 @@ USE `mart_checkout`;
 -- Table structure for table `approvals`
 --
 
-DROP TABLE IF EXISTS `approvals`;
 CREATE TABLE `approvals` (
   `barcode` varchar(255) NOT NULL,
   `banner_id` varchar(11) NOT NULL,
@@ -46,7 +45,6 @@ CREATE TABLE `approvals` (
 -- Table structure for table `checked_out`
 --
 
-DROP TABLE IF EXISTS `checked_out`;
 CREATE TABLE `checked_out` (
   `checkout_id` int(11) NOT NULL,
   `barcode` varchar(255) NOT NULL,
@@ -62,7 +60,6 @@ CREATE TABLE `checked_out` (
 -- Table structure for table `clearance`
 --
 
-DROP TABLE IF EXISTS `clearance`;
 CREATE TABLE `clearance` (
   `id` int(11) NOT NULL,
   `level` varchar(255) NOT NULL,
@@ -77,7 +74,8 @@ CREATE TABLE `clearance` (
 
 INSERT INTO `clearance` (`id`, `level`, `barcode`, `description`, `class`) VALUES
 (1, 'Photo 2', '654321', 'Camera', 'Photography 1 and Photography 2'),
-(2, 'Photo 1', '951', 'Camera only', 'Photography 1');
+(3, 'Ambient Computing', '123232', 'computer', 'Ambient Computing, Physical Coputing'),
+(4, 'Faculty', '1010', 'Faculty ', 'None');
 
 -- --------------------------------------------------------
 
@@ -85,7 +83,6 @@ INSERT INTO `clearance` (`id`, `level`, `barcode`, `description`, `class`) VALUE
 -- Table structure for table `equipment`
 --
 
-DROP TABLE IF EXISTS `equipment`;
 CREATE TABLE `equipment` (
   `barcode` varchar(255) NOT NULL,
   `name` varchar(500) NOT NULL,
@@ -101,9 +98,34 @@ CREATE TABLE `equipment` (
 --
 
 INSERT INTO `equipment` (`barcode`, `name`, `description`, `clearance`, `notes`, `account_purchased_from`, `status`) VALUES
-('123456', 'Camera 1', 'None', 'Photo 1', 'Camera Only', '', 'available for checkout'),
-('753159', 'Cannon Camera', 'Camera only', '1', 'camera with stand', '', 'reserved'),
-('951', 'Cannon Camera', '', '0,1', '', '', 'out of commission');
+('123124', 'Raspberry Pi', '', '1,3', 'Only Raspberry Pi', '', 'available for checkout'),
+('654321', 'Cannon Camera', 'Camera only', '1,3,4', '', '', 'available for checkout'),
+('753159', 'Cannon Camera', 'Camera only', '1,3', 'camera with stand', '', 'available for checkout');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `faculties`
+--
+
+CREATE TABLE `faculties` (
+  `banner_id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` bigint(11) NOT NULL,
+  `clearance_level` varchar(255) NOT NULL,
+  `amount_owed` decimal(10,0) NOT NULL DEFAULT '0',
+  `enrollment` enum('inactive','active') NOT NULL,
+  `eligibility` enum('ineligible','eligible') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `faculties`
+--
+
+INSERT INTO `faculties` (`banner_id`, `name`, `email`, `phone`, `clearance_level`, `amount_owed`, `enrollment`, `eligibility`) VALUES
+('654456', 'Tom Wilson', 'twilson@live.nmhu.edu', 505123456, 'Faculty', 0, 'inactive', 'ineligible'),
+('9797979797', 'Faculty Name', 'faculty@nmhu.edu', 555555555, 'Faculty', 0, 'active', 'eligible');
 
 -- --------------------------------------------------------
 
@@ -111,7 +133,6 @@ INSERT INTO `equipment` (`barcode`, `name`, `description`, `clearance`, `notes`,
 -- Table structure for table `reservations`
 --
 
-DROP TABLE IF EXISTS `reservations`;
 CREATE TABLE `reservations` (
   `reservation_id` int(11) NOT NULL,
   `barcode` varchar(255) NOT NULL,
@@ -120,15 +141,20 @@ CREATE TABLE `reservations` (
   `date_due` varchar(255) NOT NULL,
   `notes` varchar(5000) NOT NULL,
   `user_id` varchar(11) NOT NULL,
-  `date_time` varchar(250) DEFAULT NULL
+  `date_time` varchar(250) DEFAULT NULL,
+  `isCheckedOut` tinyint(1) NOT NULL,
+  `isDeleted` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `reservations`
 --
 
-INSERT INTO `reservations` (`reservation_id`, `barcode`, `student_id`, `date_pickup`, `date_due`, `notes`, `user_id`, `date_time`) VALUES
-(5, '1234', '1234', '05/09/2018 9:30 AM', '05/11/2018 4:00 PM', '', '1234', 'Tue, 08 May 18 03:25:26pm');
+INSERT INTO `reservations` (`reservation_id`, `barcode`, `student_id`, `date_pickup`, `date_due`, `notes`, `user_id`, `date_time`, `isCheckedOut`, `isDeleted`) VALUES
+(2, '654321', '2020', '10/18/2018 11:19 AM', '10/27/2018 11:19 AM', 'pkmpkm;,', '1010', 'Thu, 18 Oct 18 11:19:28am', 0, 1),
+(3, '64646464', '98798798798', '10/29/2018 9:51 AM', '11/05/2018 11:38 AM', 'Test Test Test', '2020', 'Sun, 28 Oct 18 12:19:29pm', 0, 0),
+(5, '753159', '9797979797', '10/29/2018 9:24 AM', '9/31/2018 6:24 PM', '', '2020', 'Sun, 28 Oct 18 01:16:11am', 1, 1),
+(6, '444444', '98798798798', '10/29/2018 9:56 AM', '10/31/2018 12:56 AM', 'Test With Drop down being populated by database.', '2020', 'Sun, 28 Oct 18 01:15:50am', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -136,17 +162,23 @@ INSERT INTO `reservations` (`reservation_id`, `barcode`, `student_id`, `date_pic
 -- Table structure for table `students`
 --
 
-DROP TABLE IF EXISTS `students`;
 CREATE TABLE `students` (
   `banner_id` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `phone` bigint(11) NOT NULL,
-  `clearance_level` int(5) NOT NULL,
+  `clearance_level` varchar(255) NOT NULL,
   `amount_owed` decimal(10,0) NOT NULL DEFAULT '0',
   `enrollment` enum('inactive','active') NOT NULL,
   `eligibility` enum('ineligible','eligible') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`banner_id`, `name`, `email`, `phone`, `clearance_level`, `amount_owed`, `enrollment`, `eligibility`) VALUES
+('987987987987', 'Faculty', 'faculty@nmhu.edu', 505555555, 'NONE', 0, 'active', 'eligible');
 
 -- --------------------------------------------------------
 
@@ -154,11 +186,10 @@ CREATE TABLE `students` (
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `banner_id` varchar(255) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `role` enum('Manager','Assistant','Student Employee') NOT NULL,
+  `role` enum('Admin','Manager','Assistant','Student Employee') NOT NULL,
   `password` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -169,6 +200,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`banner_id`, `name`, `role`, `password`) VALUES
 ('1010', 'test1', 'Manager', '$2y$10$0g0JPR11vLB0iaY.dDpz.e2gv8JVyw8Sv1PA6nCqJxx5qQjsJxeZO'),
 ('1234', 'Manager', 'Manager', '$2y$10$ad5SemSTQUqkJA0YPbEYw.cS3z/AkwbQmP8uanPg6TXFZQ5BMHsBu'),
+('12345678', 'Admin', 'Admin', '$2y$10$VdLXIC3d.2CHuY1XM.qr.ei0e2YwmzWa4OAdPV6qzEgRiXIVlMWhG'),
 ('2020', 'test2', 'Student Employee', '$2y$10$GNpgFUYur59tgNDgzohfm.WH1w50GqxiqtVfIREksPvJVNVCvyG76'),
 ('97531', 'Student Name', 'Student Employee', '$2y$10$3pDY7oNFxESm3Yo2Hm8g.ugXdy1mAi/nNfx88Tzujo1iGH3jj.jdW');
 
@@ -200,6 +232,12 @@ ALTER TABLE `clearance`
 --
 ALTER TABLE `equipment`
   ADD PRIMARY KEY (`barcode`);
+
+--
+-- Indexes for table `faculties`
+--
+ALTER TABLE `faculties`
+  ADD PRIMARY KEY (`banner_id`);
 
 --
 -- Indexes for table `reservations`
@@ -234,12 +272,12 @@ ALTER TABLE `checked_out`
 -- AUTO_INCREMENT for table `clearance`
 --
 ALTER TABLE `clearance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;COMMIT;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

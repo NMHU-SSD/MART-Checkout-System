@@ -12,7 +12,7 @@
 				<th scope="col">Barcode</th>
 				<th scope="col">Name</th>
 				<th scope="col">Description</th>
-				<th scope="col">Clearance Level</th>
+				<th scope="col">Clearance Level</th> 
 				<th scope="col">Notes</th>
 				<th scope="col">Account Purchased From</th>
 				<th scope="col">Status of Product</th>

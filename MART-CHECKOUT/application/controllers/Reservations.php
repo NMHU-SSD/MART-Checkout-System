@@ -12,6 +12,9 @@ class Reservations extends CI_Controller {
 		$this->load->database();
 		$this->load->model('User_Model');
 		$this->load->model('Reservations_Model');
+		$this->load->model('Equipment_Model');
+		$this->load->model('Student_Model');
+		$this->load->model('Faculty_Model');
 
 		if(!isset($_SESSION['logged_in'])){
 			redirect('login');
@@ -33,7 +36,10 @@ class Reservations extends CI_Controller {
 		$this->load->view('templates/header');
 		$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 		$this->load->view('templates/navigation',$nav_items);
-		$this->load->view('reservations/Reservations_add_view');
+		$results1 = $this->Student_Model->get_students();
+		$results2 = $this->Faculty_Model->get_faculties();
+		$data['results'] = array_merge($results1, $results2);
+		$this->load->view('reservations/Reservations_add_view', $data);
 		$this->load->view('templates/footer');
 	}
 
@@ -66,6 +72,7 @@ class Reservations extends CI_Controller {
 				'user_id' => $_SESSION['user_id']);
 
 				$this->Reservations_Model->insert($data, TRUE);
+				$this->Equipment_Model->updateStatus($this->input->post('barcode'));
 				redirect('reservations');
 			}
 
@@ -76,6 +83,9 @@ class Reservations extends CI_Controller {
 			$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 			$this->load->view('templates/navigation',$nav_items);
 			$data['records'] = $this->Reservations_Model->get_reservation($id);
+			$results1 = $this->Student_Model->get_students();
+			$results2 = $this->Faculty_Model->get_faculties();
+			$data['results'] = array_merge($results1, $results2);
 			$this->load->view('reservations/Reservations_edit_view',$data);
 			$this->load->view('templates/footer');
 		}
@@ -112,6 +122,15 @@ class Reservations extends CI_Controller {
 				$this->load->view('Reservations/Reservations_edit_view', $data);
 				$this->load->view('templates/footer');
 			}else{
+
+				$tempCheckout = null;
+
+				if ($this->input->post('checkedout') == 'true')	{
+					$tempCheckout = TRUE;
+				}else{
+					$tempCheckout = FALSE;
+				}
+
 				$data = array(
 					'barcode' => $this->input->post('barcode'),
 					'student_id' => $this->input->post('student_id'),
@@ -119,6 +138,7 @@ class Reservations extends CI_Controller {
 					'date_due' => $this->input->post('date_due'),
 					'notes' => $this->input->post('notes'),
 					'date_time' => $timestamp,
+					'isCheckedOut' => $tempCheckout,
 					'user_id' => $_SESSION['user_id']
 				);
 
@@ -136,9 +156,30 @@ class Reservations extends CI_Controller {
 			redirect('reservations');
 		}
 
-		public function hide($id){
-			if( $this->Reservations_Model->hide($id)){
+		public function hide($barcode){
+			if( $this->Reservations_Model->hide($barcode)){
 				$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
+			} else{
+				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');
+			}
+			redirect('reservations');
+		}
+
+		public function due_date(){
+
+			$data['records'] = $this->Reservations_Model->get_reservations();
+
+			$this->load->view('templates/header');
+			$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
+			$this->load->view('templates/navigation',$nav_items);
+			$this->load->view('reservations/Reservation_date_checker',$data);
+			$this->load->view('templates/footer');
+		}
+
+		public function check_due_date($barcode){
+			if( $this->Reservations_Model->hide($barcode)){
+				$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
+				$this->Equipment_Model->updateStatusfromRes($barcode);
 			} else{
 				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');
 			}

@@ -53,7 +53,7 @@
 					if($_SESSION['user_role'] != "Student Employee"){
 						$delete = base_url().'reservations/delete/'.$r->barcode;
 					}else{
-						$delete = base_url().'reservations/hide/'.$r->reservation_id;
+						$delete = base_url().'reservations/hide/'.$r->barcode;
 					}
 					$message = "the reservation for ".$r->barcode." on the following dates: ".$r->date_pickup." - ".$r->date_due;
 
