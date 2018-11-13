@@ -17,6 +17,10 @@ class Students extends CI_Controller {
 		if(!isset($_SESSION['logged_in'])){
 			redirect('login');
 		}
+
+		if($_SESSION['user_role'] != 'Manager'){
+			redirect('dashboard');
+		}
 	}
 
 	public function index() {
@@ -28,7 +32,7 @@ class Students extends CI_Controller {
 		$this->load->view('students/Student_view',$data);
 		$this->load->view('templates/footer');
 	}
-	
+
 	public function new() {
 		$this->load->view('templates/header');
 		$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
@@ -43,7 +47,11 @@ class Students extends CI_Controller {
 		$this->form_validation->set_rules('name','name', 'required');
 		$this->form_validation->set_rules('banner_id','banner id', 'trim|required|is_unique[students.banner_id]|numeric');
 		$this->form_validation->set_rules('phone', 'phone number', 'required');
-
+		if( is_array( $this->input->post('clearance') ) ) {
+			$clear =  join(",", $this->input->post('clearance'));
+		} else {
+			$clear =  $this->input->post('clearance');
+		}
 
 		if($this->form_validation->run() == false){
 
@@ -59,14 +67,12 @@ class Students extends CI_Controller {
 				'name' => $this->input->post('name'),
 				'email' => $this->input->post('email'),
 				'phone' => $this->input->post('phone'),
-				'clearance_level' => $this->input->post('clearance_level'),
+				'clearance_level' => $clear,
 				'amount_owed' => $this->input->post('amount_owed'),
 				'enrollment' => $this->input->post('active'),
 				'eligibility' => $this->input->post('eligible')
 			);
-
 			$this->Student_Model->insert($data, TRUE);
-
 			redirect('students');
 		}
 	}
@@ -76,6 +82,7 @@ class Students extends CI_Controller {
 		$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 		$this->load->view('templates/navigation',$nav_items);
 		$data['records'] = $this->Student_Model->get_student($id);
+		$data['clearance'] = $this->Clearance_Model->get_clearance();
 		$this->load->view('students/Student_edit_view',$data);
 		$this->load->view('templates/footer');
 	}
@@ -86,6 +93,11 @@ class Students extends CI_Controller {
 		$this->form_validation->set_rules('name','name', 'required');
 		$this->form_validation->set_rules('banner_id','banner id', 'trim|required|numeric');
 		$this->form_validation->set_rules('phone', 'phone number', 'required');
+		if( is_array( $this->input->post('clearance') ) ) {
+			$clear =  join(",", $this->input->post('clearance'));
+		} else {
+			$clear =  $this->input->post('clearance');
+		}
 
 
 		if($this->form_validation->run() == false){
@@ -98,7 +110,7 @@ class Students extends CI_Controller {
 				'name' => $this->input->post('name'),
 				'email' => $this->input->post('email'),
 				'phone' => $this->input->post('phone'),
-				'clearance_level' => $this->input->post('clearance_level'),
+				'clearance_level' => $clear,
 				'amount_owed' => $this->input->post('amount_owed'),
 				'enrollment' => $this->input->post('active'),
 				'eligibility' => $this->input->post('eligible')
@@ -108,6 +120,7 @@ class Students extends CI_Controller {
 			$object -> setFlags( ArrayObject::STD_PROP_LIST|ArrayObject::ARRAY_AS_PROPS);
 
 			$data['records'] = $object;
+			$data['clearance'] = $this->Clearance_Model->get_clearance();
 
 			$this->load->view('students/Student_edit_view', $data);
 			$this->load->view('templates/footer');
@@ -119,7 +132,7 @@ class Students extends CI_Controller {
 				'name' => $this->input->post('name'),
 				'email' => $this->input->post('email'),
 				'phone' => $this->input->post('phone'),
-				'clearance_level' => $this->input->post('clearance_level'),
+				'clearance_level' => $clear,
 				'amount_owed' => $this->input->post('amount_owed'),
 				'enrollment' => $this->input->post('active'),
 				'eligibility' => $this->input->post('eligible')
@@ -135,11 +148,8 @@ class Students extends CI_Controller {
 	public function delete_student($id) {
 		if( $this->Student_Model->delete($id)){
 			$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
-
 		} else{
 			$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');
-
-
 		}
 		redirect('students');
 	}

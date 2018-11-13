@@ -118,6 +118,7 @@ class User_Model extends CI_Model{
       );
     } else if ($role == "Student Employee") {
       $nav_items['nav_items'] = array(
+        'Equipment' => 'equipment',
         'Reservations' => 'reservations'
       );
     }

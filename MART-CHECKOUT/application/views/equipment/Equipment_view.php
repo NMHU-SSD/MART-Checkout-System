@@ -2,9 +2,14 @@
 	<?php echo $this->session->flashdata('message'); ?>
 
 	<h1>Equipment</h1>
+	<br>
 
-	<a class="btn btn-primary float-right m-2" href = "<?php echo base_url(); ?>equipment/new">New Equipment</a>
+	<!-- Search Bar -->
+	<input class="form-control" id="myInput" type="text" placeholder="Search..">
 
+	<?php if($_SESSION['user_role'] != "Student Employee"){?>
+		<a class="btn btn-primary float-right m-2" href = "<?php echo base_url(); ?>equipment/new">New Equipment</a>
+	<?php } ?>
 	<table class="table table-bordered table-hover">
 		<thead>
 			<tr>
@@ -12,15 +17,17 @@
 				<th scope="col">Barcode</th>
 				<th scope="col">Name</th>
 				<th scope="col">Description</th>
-				<th scope="col">Clearance Level</th> 
+				<th scope="col">Clearance Level</th>
 				<th scope="col">Notes</th>
 				<th scope="col">Account Purchased From</th>
 				<th scope="col">Status of Product</th>
-				<th scope="col">Edit</th>
-				<th scope="col">Delete</th>
+				<?php if($_SESSION['user_role'] != "Student Employee"){?>
+					<th scope="col">Edit</th>
+					<th scope="col">Delete</th>
+				<?php } ?>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody = id="equipmentTable">
 			<?php
 			$i = 1;
 			foreach($records as $r) {
@@ -32,9 +39,13 @@
 				$temp = "";
 				$pieces = explode(",", $r->clearance);
 				foreach($clearance as $c){
-					foreach($pieces as $p){
-						if($p == $c->id){
-							$temp .= $c->level .= " ";
+					for($p=0; $p < count($pieces); $p++){
+						if($pieces[$p] == $c->id){
+							if(count($pieces)-1 == $p){
+								$temp .= $c->level;
+							}else{
+								$temp .= $c->level. ', ';
+							}
 						}
 					}
 				}
@@ -44,13 +55,15 @@
 				echo "<td>".$r->notes."</td>";
 				echo "<td>".$r->account_purchased_from."</td>";
 				echo "<td>".$r->status."</td>";
-				echo "<td><a href = '".base_url()."equipment/edit/"
-				.$r->barcode."'>Edit</a></td>";
+				if($_SESSION['user_role'] != "Student Employee"){
+					echo "<td><a href = '".base_url()."equipment/edit/"
+					.$r->barcode."'>Edit</a></td>";
 
-				$delete = base_url().'equipment/delete/'.$r->barcode;
-				echo '<th scope="col"><a href="" data-href="'.$delete.'"
-				data-toggle="modal" data-target="#confirm-delete" data-message="'.$r->barcode.'" >Delete</a></th>';
-				echo "<tr>";
+					$delete = base_url().'equipment/delete/'.$r->barcode;
+					echo '<th scope="col"><a href="" data-href="'.$delete.'"
+					data-toggle="modal" data-target="#confirm-delete" data-message="'.$r->barcode.'" >Delete</a></th>';
+					echo "<tr>";
+				}
 			}
 			?>
 		</tbody>
@@ -78,3 +91,16 @@
 	</div>
 
 </div>
+
+
+<!-- Search -->
+<script>
+$(document).ready(function(){
+	$("#myInput").on("keyup", function() {
+		var value = $(this).val().toLowerCase();
+		$("#equipmentTable tr").filter(function() {
+			$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		});
+	});
+});
+</script>

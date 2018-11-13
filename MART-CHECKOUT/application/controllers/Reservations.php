@@ -45,10 +45,13 @@ class Reservations extends CI_Controller {
 
 	public function add() {
 
-		$this->form_validation->set_rules('barcode','item barcode', 'trim|required|is_unique[reservations.barcode]');
+
+
+		$this->form_validation->set_rules('barcode[]','item barcode', 'trim|required|is_unique[reservations.barcode]');
 		$this->form_validation->set_rules('student_id', 'student id', 'required');
 		$this->form_validation->set_rules('date_pickup', 'date pickup', 'required');
 		$this->form_validation->set_rules('date_due', 'date due', 'required');
+
 
 		if($this->form_validation->run() == false){
 			$this->load->view('templates/header');
@@ -59,23 +62,45 @@ class Reservations extends CI_Controller {
 
 		} else {
 
-			date_default_timezone_set("America/Denver");
-			$timestamp = date('D, d M y h:i:sa');
+			$results1 = $this->Student_Model->get_students();
+			$results2 = $this->Faculty_Model->get_faculties();
+			$data = array_merge($results1, $results2);
 
-			$data = array(
-				'barcode' => $this->input->post('barcode'),
-				'student_id' => $this->input->post('student_id'),
-				'date_pickup' => $this->input->post('date_pickup'),
-				'date_due' => $this->input->post('date_due'),
-				'notes' => $this->input->post('notes'),
-				'date_time' => $timestamp,
-				'user_id' => $_SESSION['user_id']);
-
-				$this->Reservations_Model->insert($data, TRUE);
-				$this->Equipment_Model->updateStatus($this->input->post('barcode'));
-				redirect('reservations');
+			if($_SESSION['user_role'] != "Manager"){
+				foreach ($data as $d) {
+					if($this->input->post('student_id') == $d->banner_id){
+						if($d->clearance_level == "Restricted"){
+							$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Student ID entered has Restricted Clearance Level. Must be a Manager to add reservation. </div>');
+							redirect('reservations');
+						}
+					}
+				}
 			}
 
+			if( is_array( $this->input->post('barcode') ) ) {
+				foreach($this->input->post("barcode") as $row) {
+					// Update DB on number of barcode input made
+					date_default_timezone_set("America/Denver");
+					$timestamp = date('D, d M y h:i:sa');
+
+					$data = array(
+						'barcode' => $row,
+						'student_id' => $this->input->post('student_id'),
+						'date_pickup' => $this->input->post('date_pickup'),
+						'date_due' => $this->input->post('date_due'),
+						'notes' => $this->input->post('notes'),
+						'date_time' => $timestamp,
+						'user_id' => $_SESSION['user_id']);
+
+						$this->Reservations_Model->insert($data, TRUE);
+						$this->Equipment_Model->updateStatus($row);
+				}
+			} else {
+				$clear =  $this->input->post('barcode');
+			}
+
+				redirect('reservations');
+			}
 		}
 
 		public function edit($id) {
@@ -159,27 +184,6 @@ class Reservations extends CI_Controller {
 		public function hide($barcode){
 			if( $this->Reservations_Model->hide($barcode)){
 				$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
-			} else{
-				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');
-			}
-			redirect('reservations');
-		}
-
-		public function due_date(){
-
-			$data['records'] = $this->Reservations_Model->get_reservations();
-
-			$this->load->view('templates/header');
-			$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
-			$this->load->view('templates/navigation',$nav_items);
-			$this->load->view('reservations/Reservation_date_checker',$data);
-			$this->load->view('templates/footer');
-		}
-
-		public function check_due_date($barcode){
-			if( $this->Reservations_Model->hide($barcode)){
-				$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
-				$this->Equipment_Model->updateStatusfromRes($barcode);
 			} else{
 				$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');
 			}

@@ -17,6 +17,8 @@
           $new_clear[$l->id] = $l->level;
         }
 
+        // echo var_dump($new_clear);
+
         echo form_open('Equipment/update/'.$records->barcode);
         echo form_hidden('old_barcode', $records->barcode);
 
@@ -48,7 +50,50 @@
 
         <div class="form-group">
           <label for="clearance">Select Clearance Level</label><br>
-          <?php echo form_multiselect('clearance[]', $new_clear , 'class="form-control" id="clearance"'); ?>
+          <?php
+          // When editing recheck all boxes that were checked
+          // temp var
+          $temp = "";
+          // seperate clearance numbers on ,
+          $pieces = explode(",", $records->clearance);
+
+          echo '<div style="height: 150px; overflow-y: scroll;">';
+
+          // loop through new clearance array
+          foreach($new_clear as $c=>$label_text){
+            // Loop through clearance numbers
+            foreach($pieces as $p){
+              // If clearance number is equal to clearance
+              if((int)$p == $c){
+                // make new data array with box checked
+                $data = array(
+                  'name' => 'clearance[]',
+                  'id' => $c,
+                  'value' => $c,
+                  'checked' => TRUE,
+                  'class' => 'form-check-input'
+                );
+                // break out of loop if found
+                break;
+              }else{
+                $data = array(
+                  'name' => 'clearance[]',
+                  'id' => $c,
+                  'value' => $c,
+                  'checked' => FALSE,
+                  'class' => 'form-check-input'
+                );
+              }
+            }
+
+            // make checkbox
+            echo '<div class="form-check">';
+            echo form_label(form_checkbox($data) . $label_text, $c.'-label', array('for' => $c));
+            echo '</div>';
+          }
+          // complete form
+          echo '</div>';
+          ?>
         </div>
 
         <div class="form-group">

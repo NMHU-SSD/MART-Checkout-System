@@ -38,11 +38,5 @@ class Reservations_Model extends CI_Model {
     $this->db->update('reservations', array('isDeleted' => TRUE));
     return true;
   }
-
-  public function updateisCheckedOut($barcode){
-    $this->db->where('barcode', $barcode);
-    $this->db->update('reservations', array('isCheckedOut' => TRUE));
-    return true;
-  }
 }
 ?>

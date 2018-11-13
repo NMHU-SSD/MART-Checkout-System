@@ -30,6 +30,9 @@ class Equipment extends CI_Controller {
 	}
 
 	public function new() {
+		if($_SESSION['user_role'] == "Student Employee"){
+			redirect('equipment');
+		}
 		$this->load->view('templates/header');
 		$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 		$this->load->view('templates/navigation',$nav_items);
@@ -41,6 +44,9 @@ class Equipment extends CI_Controller {
 
 
 	public function add() {
+		if($_SESSION['user_role'] == "Student Employee"){
+			redirect('equipment');
+		}
 		$this->form_validation->set_rules('barcode','barcode', 'trim|required');
 		$this->form_validation->set_rules('name','name', 'required');
 		if( is_array( $this->input->post('clearance') ) ) {
@@ -71,7 +77,9 @@ class Equipment extends CI_Controller {
 	}
 
 	public function edit($id){
-
+		if($_SESSION['user_role'] == "Student Employee"){
+			redirect('equipment');
+		}
 		$this->load->view('templates/header');
 		$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 		$this->load->view('templates/navigation',$nav_items);
@@ -83,7 +91,9 @@ class Equipment extends CI_Controller {
 
 
 	public function update($id) {
-
+		if($_SESSION['user_role'] == "Student Employee"){
+			redirect('equipment');
+		}
 		$this->form_validation->set_rules('barcode','barcode', 'trim|required');
 		$this->form_validation->set_rules('name','name', 'required');
 		$this->form_validation->set_rules('description','description', 'required');
@@ -111,11 +121,13 @@ class Equipment extends CI_Controller {
 			$objects = new ArrayObject($post_vars);
 			$objects->setFlags(ArrayObject::STD_PROP_LIST|ArrayObject::ARRAY_AS_PROPS);
 			$data['records'] = $objects;
+			$data['clearance'] = $this->Clearance_Model->get_clearance();
 
 			$this->load->view('equipment/Equipment_edit_view', $data);
 			$this->load->view('templates/footer');
 
 		}else{
+
 			$data = array(
 				'barcode' => $this->input->post('barcode'),
 				'name' => $this->input->post('name'),
@@ -134,7 +146,9 @@ class Equipment extends CI_Controller {
 	}
 
 	public function delete($id) {
-
+		if($_SESSION['user_role'] == "Student Employee"){
+			redirect('equipment');
+		}
 		if( $this->Equipment_Model->delete($id)){
 			$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
 		} else {

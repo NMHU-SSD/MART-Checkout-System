@@ -5,22 +5,25 @@
       <br>
 
       <?php
-      $new_id = array();
+      // $new_id = array();
 
-      foreach ($results as $r) {
-        $new_id[$r->banner_id] = $r->banner_id;
-      }
+      // foreach ($results as $r) {
+      //   $new_id[$r->banner_id] = $r->banner_id;
+      // }
       ?>
 
-      <div class="form-group">
+      <div id="form" class="form-group">
         <?php
         echo form_open('reservations/add');
         echo form_label('Equipment Barcode');
-        echo form_input(array('id'=>'barcode','name'=>'barcode', 'value'=>set_value('barcode'), 'class' => 'form-control'));
+        echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode[]'), 'class' => 'form-control'));
+        // echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode'), 'class' => 'form-control'));
+
         ?>
         <span class = "text-danger"><?php echo form_error('barcode');?></span>
       </div>
-
+      <button type="button" class="btn btn-outline-secondary">Add Another Barcode</button>
+      <br><br>
       <!-- Student ID -->
       <div class="form-group">
         <label for="student_id" class="control-label">Student ID</label>
@@ -29,8 +32,8 @@
             <span class="input-group-text">@</span>
           </div>
           <?php
-          // echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>set_value('student_id'), 'class' => 'form-control'));
-          echo form_dropdown('student_id"'.'class="form-control', $new_id);
+          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>set_value('student_id'), 'class' => 'form-control'));
+          // echo form_dropdown('student_id"'.'class="form-control', $new_id);
           ?>
         </div>
         <span class = "text-danger"><?php echo form_error('student_id');?></span>
@@ -144,6 +147,27 @@ $(function () {
   });
   $("#end").on("dp.change", function (e) {
     $('#pickup').data("DateTimePicker").maxDate(e.date);
+  });
+});
+
+
+$(document).ready(function(){
+  $("button").click(function(){
+    // form_input(
+    //   array(
+    //     'id'=>'barcode',
+    //     'name'=>'barcode[]',
+    //     'value'=>set_value('barcode'),
+    //     'class' => 'form-control'
+    //   ));
+    // alert("The paragraph was clicked.");
+    $('<input>').attr({
+      // type: 'hidden',
+      id: 'barcode',
+      name: 'barcode[]',
+      value: "<?php set_value('barcode') ?>",
+      class: 'form-control'
+    }).appendTo('form');
   });
 });
 </script>

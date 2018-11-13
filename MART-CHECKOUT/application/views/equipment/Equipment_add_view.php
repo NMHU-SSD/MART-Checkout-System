@@ -51,7 +51,23 @@
         <!-- Clearance Level -->
         <div class="form-group">
           <label for="clearance">Select Clearance Level</label><br>
-          <?php echo form_multiselect('clearance[]', $new_clear , 'class="form-control" id="clearance"'); ?>
+          <?php
+          echo '<div style="height: 100px; overflow-y: scroll;">';
+          foreach($new_clear as $c=>$label_text){
+            $data = array(
+              'name' => 'clearance[]',
+              'id' => $c,
+              'value' => $c,
+              'checked' => FALSE,
+              'class' => 'form-check-input'
+            );
+
+            echo '<div class="form-check">';
+            echo form_label(form_checkbox($data) . $label_text, $c.'-label', array('for' => $c));
+            echo '</div>';
+          }
+          echo '</div>';
+          ?>
         </div>
 
         <!-- Notes -->

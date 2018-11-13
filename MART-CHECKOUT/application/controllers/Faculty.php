@@ -17,6 +17,10 @@ class Faculty extends CI_Controller {
     if(!isset($_SESSION['logged_in'])){
       redirect('login');
     }
+
+    if($_SESSION['user_role'] != 'Manager'){
+      redirect('dashboard');
+    }
   }
 
   public function index() {
