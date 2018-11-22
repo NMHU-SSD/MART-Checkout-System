@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 30, 2018 at 08:12 PM
+-- Generation Time: Nov 22, 2018 at 04:17 AM
 -- Server version: 5.6.34-log
 -- PHP Version: 7.1.5
 
@@ -65,17 +65,19 @@ CREATE TABLE `clearance` (
   `level` varchar(255) NOT NULL,
   `barcode` varchar(255) NOT NULL,
   `description` varchar(500) NOT NULL,
-  `class` varchar(5000) NOT NULL
+  `class` varchar(5000) NOT NULL,
+  `isDeleted` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `clearance`
 --
 
-INSERT INTO `clearance` (`id`, `level`, `barcode`, `description`, `class`) VALUES
-(1, 'Photo 2', '654321', 'Camera', 'Photography 1 and Photography 2'),
-(3, 'Ambient Computing', '123232', 'computer', 'Ambient Computing, Physical Coputing'),
-(4, 'Faculty', '1010', 'Faculty ', 'None');
+INSERT INTO `clearance` (`id`, `level`, `barcode`, `description`, `class`, `isDeleted`) VALUES
+(1, 'Photo 2', '654321', 'Camera', 'Photography 1 and Photography 2', 1),
+(3, 'Ambient Computing', '123232', 'computer', 'Ambient Computing, Physical Coputing', 0),
+(4, 'Faculty', '1010', 'Faculty ', 'None', 0),
+(5, 'Restricted', '000000', 'Restricted', 'None', 0);
 
 -- --------------------------------------------------------
 
@@ -90,17 +92,19 @@ CREATE TABLE `equipment` (
   `clearance` varchar(20) NOT NULL,
   `notes` varchar(5000) NOT NULL,
   `account_purchased_from` varchar(500) NOT NULL,
-  `status` enum('out of commission','available for checkout','reserved','available after class','out for repair') NOT NULL
+  `status` enum('out of commission','available for checkout','reserved','available after class','out for repair') NOT NULL,
+  `isDeleted` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `equipment`
 --
 
-INSERT INTO `equipment` (`barcode`, `name`, `description`, `clearance`, `notes`, `account_purchased_from`, `status`) VALUES
-('123124', 'Raspberry Pi', '', '1,3', 'Only Raspberry Pi', '', 'available for checkout'),
-('654321', 'Cannon Camera', 'Camera only', '1,3,4', '', '', 'available for checkout'),
-('753159', 'Cannon Camera', 'Camera only', '1,3', 'camera with stand', '', 'available for checkout');
+INSERT INTO `equipment` (`barcode`, `name`, `description`, `clearance`, `notes`, `account_purchased_from`, `status`, `isDeleted`) VALUES
+('123124', 'Raspberry Pi', 'None', '1,4', 'Only Raspberry Pi', '', 'available for checkout', 0),
+('333333', 'Item test', 'None', '3,5', 'Ambient Computing, Restricted. ', '', 'out for repair', 0),
+('654321', 'Cannon Camera', 'Camera only', '1,3,4,5', '', '', 'available for checkout', 0),
+('753159', 'Cannon Camera', 'Camera only', '1,3', 'camera with stand', '', 'available for checkout', 0);
 
 -- --------------------------------------------------------
 
@@ -116,16 +120,17 @@ CREATE TABLE `faculties` (
   `clearance_level` varchar(255) NOT NULL,
   `amount_owed` decimal(10,0) NOT NULL DEFAULT '0',
   `enrollment` enum('inactive','active') NOT NULL,
-  `eligibility` enum('ineligible','eligible') NOT NULL
+  `eligibility` enum('ineligible','eligible') NOT NULL,
+  `isDeleted` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `faculties`
 --
 
-INSERT INTO `faculties` (`banner_id`, `name`, `email`, `phone`, `clearance_level`, `amount_owed`, `enrollment`, `eligibility`) VALUES
-('654456', 'Tom Wilson', 'twilson@live.nmhu.edu', 505123456, 'Faculty', 0, 'inactive', 'ineligible'),
-('9797979797', 'Faculty Name', 'faculty@nmhu.edu', 555555555, 'Faculty', 0, 'active', 'eligible');
+INSERT INTO `faculties` (`banner_id`, `name`, `email`, `phone`, `clearance_level`, `amount_owed`, `enrollment`, `eligibility`, `isDeleted`) VALUES
+('654456', 'Tom Wilson', 'twilson@live.nmhu.edu', 505123456, 'Faculty', 0, 'active', 'eligible', 0),
+('9797979797', 'Faculty Name', 'faculty@nmhu.edu', 555555555, 'Faculty', 0, 'active', 'eligible', 1);
 
 -- --------------------------------------------------------
 
@@ -152,9 +157,12 @@ CREATE TABLE `reservations` (
 
 INSERT INTO `reservations` (`reservation_id`, `barcode`, `student_id`, `date_pickup`, `date_due`, `notes`, `user_id`, `date_time`, `isCheckedOut`, `isDeleted`) VALUES
 (2, '654321', '2020', '10/18/2018 11:19 AM', '10/27/2018 11:19 AM', 'pkmpkm;,', '1010', 'Thu, 18 Oct 18 11:19:28am', 0, 1),
-(3, '64646464', '98798798798', '10/29/2018 9:51 AM', '11/05/2018 11:38 AM', 'Test Test Test', '2020', 'Sun, 28 Oct 18 12:19:29pm', 0, 0),
-(5, '753159', '9797979797', '10/29/2018 9:24 AM', '9/31/2018 6:24 PM', '', '2020', 'Sun, 28 Oct 18 01:16:11am', 1, 1),
-(6, '444444', '98798798798', '10/29/2018 9:56 AM', '10/31/2018 12:56 AM', 'Test With Drop down being populated by database.', '2020', 'Sun, 28 Oct 18 01:15:50am', 1, 0);
+(3, '5555', '002468', '10/29/2018 9:51 AM', '11/05/2018 11:38 AM', 'Test Test Test', '2020', 'Sun, 28 Oct 18 12:19:29pm', 0, 0),
+(6, '444444', '001357', '10/29/2018 9:56 AM', '10/31/2018 12:56 AM', 'Test With Drop down being populated by database.', '2020', 'Sun, 28 Oct 18 01:15:50am', 0, 1),
+(7, '3333', '654123', '11/03/2018 9:57 AM', '11/19/2018 11:57 PM', 'Only Managers can add.', '1010', 'Fri, 02 Nov 18 11:58:03pm', 0, 0),
+(9, '684', '99999', '11/12/2018 2:31 PM', '11/14/2018 2:32 PM', 'Reservation barcode made with 684, 351 are together.', '1010', 'Sat, 10 Nov 18 02:32:38pm', 0, 0),
+(10, '351', '99999', '11/12/2018 2:31 PM', '11/14/2018 2:32 PM', 'Reservation barcode made with 684, 351 are together.', '1010', 'Sat, 10 Nov 18 02:32:38pm', 0, 0),
+(11, '321657', '123456', '11/22/2018 9:06 AM', '11/26/2018 9:06 PM', 'test', '1010', 'Wed, 21 Nov 18 09:06:15pm', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -170,15 +178,17 @@ CREATE TABLE `students` (
   `clearance_level` varchar(255) NOT NULL,
   `amount_owed` decimal(10,0) NOT NULL DEFAULT '0',
   `enrollment` enum('inactive','active') NOT NULL,
-  `eligibility` enum('ineligible','eligible') NOT NULL
+  `eligibility` enum('ineligible','eligible') NOT NULL,
+  `isDeleted` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`banner_id`, `name`, `email`, `phone`, `clearance_level`, `amount_owed`, `enrollment`, `eligibility`) VALUES
-('987987987987', 'Faculty', 'faculty@nmhu.edu', 505555555, 'NONE', 0, 'active', 'eligible');
+INSERT INTO `students` (`banner_id`, `name`, `email`, `phone`, `clearance_level`, `amount_owed`, `enrollment`, `eligibility`, `isDeleted`) VALUES
+('001357', 'Faculty', 'faculty@nmhu.edu', 505555555, '1,3', 5, 'active', 'ineligible', 0),
+('654123', 'Restricted', 'res@nmhu.edu', 5057654321, '5', 0, 'active', 'eligible', 1);
 
 -- --------------------------------------------------------
 
@@ -202,6 +212,7 @@ INSERT INTO `users` (`banner_id`, `name`, `role`, `password`) VALUES
 ('1234', 'Manager', 'Manager', '$2y$10$ad5SemSTQUqkJA0YPbEYw.cS3z/AkwbQmP8uanPg6TXFZQ5BMHsBu'),
 ('12345678', 'Admin', 'Admin', '$2y$10$VdLXIC3d.2CHuY1XM.qr.ei0e2YwmzWa4OAdPV6qzEgRiXIVlMWhG'),
 ('2020', 'test2', 'Student Employee', '$2y$10$GNpgFUYur59tgNDgzohfm.WH1w50GqxiqtVfIREksPvJVNVCvyG76'),
+('3030', 'assistant', 'Assistant', '$2y$10$HWxzJ41prDbepDctJtnsk.tTg.vevshSj.Ewj6/w9x/BRzePQq0Jq'),
 ('97531', 'Student Name', 'Student Employee', '$2y$10$3pDY7oNFxESm3Yo2Hm8g.ugXdy1mAi/nNfx88Tzujo1iGH3jj.jdW');
 
 --
@@ -272,12 +283,12 @@ ALTER TABLE `checked_out`
 -- AUTO_INCREMENT for table `clearance`
 --
 ALTER TABLE `clearance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;COMMIT;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
