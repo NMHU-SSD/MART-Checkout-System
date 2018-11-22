@@ -86,7 +86,7 @@ class User_Model extends CI_Model{
   //get enum roles from users table
   public function get_roles(){
 
-    $row = $this->db->query("SHOW COLUMNS FROM users LIKE 'role' ")->row()->Type;
+    $row = $this->db->query("SHOW COLUMNS FROM users LIKE 'role'")->row()->Type;
     $regex = "/'(.*?)'/";
     preg_match_all( $regex , $row, $enum_array );
     $enum_fields = $enum_array[1];
@@ -113,8 +113,11 @@ class User_Model extends CI_Model{
       );
     } else if ($role == "Assistant") {
       $nav_items['nav_items'] = array(
+        'Students'=>'students',
+        'Clearance'=>'clearance',
         'Equipment' => 'equipment',
-        'Reservations' => 'reservations'
+        'Reservations' => 'reservations',
+        'Faculty' => 'faculty'
       );
     } else if ($role == "Student Employee") {
       $nav_items['nav_items'] = array(

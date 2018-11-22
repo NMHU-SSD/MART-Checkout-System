@@ -14,7 +14,7 @@ class Student_Model extends CI_Model {
     $query = $this->db->get_where("students",array("banner_id"=>$banner_id));
     $results = $query->result();
     return $results[0];
-  } 
+  }
 
   public function insert($data) {
     if ($this->db->insert("students", $data)) {
@@ -29,6 +29,12 @@ class Student_Model extends CI_Model {
   public function update($data, $old_banner_id) {
     $this->db->where("banner_id", $old_banner_id);
     $this->db->update("students", $data);
+  }
+
+  public function hide($banner_id){
+    $this->db->where('banner_id', $banner_id);
+    $this->db->update('students', array('isDeleted' => TRUE));
+    return true;
   }
 }
 ?>

@@ -16,6 +16,9 @@
 				<!-- <th scope="col">Amount Owed</th> -->
 				<!-- <th scope="col">Enrollment</th> -->
 				<!-- <th scope="col">Eligibility</th> -->
+				<?php if($_SESSION['user_role'] == "Manager"){ ?>
+					<th scope="col">Hidden</th>
+				<?php } ?>
 				<th scope="col">Edit</th>
 				<th scope="col">Delete</th>
 			</tr>
@@ -24,6 +27,8 @@
 			<?php
 			$i = 1;
 			foreach($faculties as $f) {
+				if($_SESSION['user_role'] != "Manager" && $f->isDeleted == "0" || $_SESSION['user_role'] == "Manager"){
+
 				echo "<tr>";
 				echo "<td>".$i++."</td>";
 				echo "<th scope='row'>".$f->banner_id."</th>";
@@ -34,14 +39,26 @@
 				// echo "<td>$".$f->amount_owed."</td>";
 				// echo "<td>".$f->enrollment."</td>";
 				// echo "<td>".$f->eligibility."</td>";
+				if($_SESSION['user_role'] == "Manager"){
+					if($f->isDeleted == "1"){
+						echo "<td>Not Showing</td>";
+					}else{
+						echo "<td>Showing</td>";
+					}
+				}
+
 				echo "<th scope='col'><a href = '".base_url()."faculty/edit/"
 				.$f->banner_id."'>Edit</a></th>";
 
-				$delete = base_url().'faculty/delete/'.$f->banner_id;
-				echo '<th scope="col"><a href="" data-href="'.$delete.'"
-				data-toggle="modal" data-target="#confirm-delete" data-message="'.$f->name.'" >Delete</a></th>';
+				if($_SESSION['user_role'] == "Manager"){
+					$delete = base_url().'faculty/delete/'.$f->banner_id;
+				}else{
+					$delete = base_url().'faculty/hide/'.$f->banner_id;
+				}
+				echo '<th scope="col"><a href="" data-href="'.$delete.'"data-toggle="modal" data-target="#confirm-delete" data-message="'.$f->banner_id.'" >Delete</a></th>';
 				echo "<tr>";
 			}
+		}
 			?>
 		</tbody>
 	</table>

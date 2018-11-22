@@ -15,6 +15,9 @@
 				<th scope="col">Barcode</th>
 				<th scope="col">Description</th>
 				<th scope="col">Class</th>
+        <?php if($_SESSION['user_role'] == "Manager"){ ?>
+          <th scope="col">Hidden</th>
+        <?php } ?>
 				<th scope="col">Edit</th>
 				<th scope="col">Delete</th>
 			</tr>
@@ -24,16 +27,31 @@
 
 			$i = 1;
 			foreach($records as $r) {
+        if($_SESSION['user_role'] != "Manager" && $r->isDeleted == "0" || $_SESSION['user_role'] == "Manager"){
+
 				echo "<tr>";
 				echo "<th scope='row'>".$i++."</th>";
         echo "<td>".$r->level."</td>";
 				echo "<td>".$r->barcode."</td>";
 				echo "<td>".$r->description."</td>";
 				echo "<td>".$r->class."</td>";
+        if($_SESSION['user_role'] == "Manager"){
+          if($r->isDeleted == "1"){
+            echo "<td>Not Showing</td>";
+          }else{
+            echo "<td>Showing</td>";
+          }
+        }
 				echo "<td><a href = '".base_url()."clearance/edit/".$r->id."'>Edit</a></td>";
-				echo '<th scope="col"><a href="" data-href="'.base_url().'clearance/delete/'.$r->id.'"data-toggle="modal" data-target="#confirm-delete" data-message="'.$r->level.'" >Delete</a></th>';
+        if($_SESSION['user_role'] == "Manager"){
+          $delete = base_url().'clearance/delete/'.$r->id;
+        }else{
+          $delete = base_url().'clearance/hide/'.$r->id;
+        }
+        echo '<th scope="col"><a href="" data-href="'.$delete.'"data-toggle="modal" data-target="#confirm-delete" data-message="'.$r->level.'" >Delete</a></th>';
 				echo "<tr>";
 			}
+    }
 			?>
 		</tbody>
 	</table>

@@ -17,6 +17,10 @@ class Employees extends CI_Controller {
       redirect('login');
     }
 
+    if($_SESSION['user_role'] != 'Manager'){
+      redirect('dashboard');
+    }
+
   }
 
   //default view displays all employees

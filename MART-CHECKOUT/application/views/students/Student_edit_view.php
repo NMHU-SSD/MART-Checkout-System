@@ -33,7 +33,7 @@
           </div>
 
           <?php
-          echo form_input(array('id'=>'banner_id', 'name'=>'banner_id', 'value'=>$records->banner_id, 'class' => 'form-control'));
+          echo form_input(array('id'=>'banner_id', 'name'=>'banner_id', 'value'=>$records->banner_id, 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
           ?>
 
         </div>
@@ -49,7 +49,7 @@
 
       <?php
       echo form_label('Email');
-      echo form_input(array('id'=>'email','name'=>'email', 'value'=>$records->email, 'class' => 'form-control'));
+      echo form_input(array('id'=>'email','name'=>'email', 'value'=>$records->email, 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'email'));
       ?>
       <span class = "text-danger"><?php echo form_error('email');?></span>
       <br>

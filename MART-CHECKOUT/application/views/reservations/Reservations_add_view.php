@@ -16,7 +16,7 @@
         <?php
         echo form_open('reservations/add');
         echo form_label('Equipment Barcode');
-        echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode[]'), 'class' => 'form-control'));
+        echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode[]'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
         // echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode'), 'class' => 'form-control'));
 
         ?>
@@ -32,7 +32,7 @@
             <span class="input-group-text">@</span>
           </div>
           <?php
-          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>set_value('student_id'), 'class' => 'form-control'));
+          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>set_value('student_id'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
           // echo form_dropdown('student_id"'.'class="form-control', $new_id);
           ?>
         </div>
@@ -166,7 +166,9 @@ $(document).ready(function(){
       id: 'barcode',
       name: 'barcode[]',
       value: "<?php set_value('barcode') ?>",
-      class: 'form-control'
+      class: 'form-control',
+      type: "number",
+      autocomplete: 'off'
     }).appendTo('form');
   });
 });

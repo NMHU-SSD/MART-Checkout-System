@@ -156,6 +156,15 @@ class Equipment extends CI_Controller {
 		}
 		redirect('equipment');
 	}
+
+	public function hide($barcode){
+		if( $this->Equipment_Model->hide($barcode)){
+			$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
+		} else{
+			$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');
+		}
+		redirect('equipment');
+	}
 }
 
 ?>

@@ -18,7 +18,7 @@ class Faculty extends CI_Controller {
       redirect('login');
     }
 
-    if($_SESSION['user_role'] != 'Manager'){
+    if($_SESSION['user_role'] == 'Student Employee'){
       redirect('dashboard');
     }
   }
@@ -137,6 +137,15 @@ class Faculty extends CI_Controller {
 
   public function delete($id) {
     if( $this->Faculty_Model->delete_faculty($id)){
+      $this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
+    } else{
+      $this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');
+    }
+    redirect('faculty');
+  }
+
+  public function hide($id){
+    if($this->Faculty_Model->hide_faculty($id)){
       $this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
     } else{
       $this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');

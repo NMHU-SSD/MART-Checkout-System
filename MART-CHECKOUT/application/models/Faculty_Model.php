@@ -33,6 +33,12 @@ class Faculty_Model extends CI_Model{
   public function delete_faculty($banner_id){
     return $this->db->delete('faculties', "banner_id = ".$banner_id);
   }
+
+  public function hide_faculty($banner_id){
+    $this->db->where('banner_id', $banner_id);
+    $this->db->update('faculties', array('isDeleted' => TRUE));
+    return true;
+  }
 }
 
 ?>

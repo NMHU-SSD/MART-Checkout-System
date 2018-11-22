@@ -24,7 +24,7 @@
             <span class="input-group-text">@</span>
           </div>
           <?php
-          echo form_input(array('id'=>'banner_id','name'=>'banner_id', 'value' => set_value('banner_id'), 'class' => 'form-control'));
+          echo form_input(array('id'=>'banner_id','name'=>'banner_id', 'value' => set_value('banner_id'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
           ?>
         </div>
         <span class="text-danger"><?php echo form_error('banner_id'); ?></span>
@@ -41,7 +41,7 @@
       <!-- Email -->
       <?php
       echo form_label('Email');
-      echo form_input(array('id'=>'email','name'=>'email','value' => set_value('email'), 'class' => 'form-control')); 			?>
+      echo form_input(array('id'=>'email','name'=>'email','value' => set_value('email'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'email')); 			?>
       <span class="text-danger"><?php echo form_error('email');?></span>
       <br>
 

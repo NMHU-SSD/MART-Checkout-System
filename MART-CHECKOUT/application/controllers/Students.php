@@ -18,7 +18,7 @@ class Students extends CI_Controller {
 			redirect('login');
 		}
 
-		if($_SESSION['user_role'] != 'Manager'){
+		if($_SESSION['user_role'] == 'Student Manager'){
 			redirect('dashboard');
 		}
 	}
@@ -147,6 +147,15 @@ class Students extends CI_Controller {
 
 	public function delete_student($id) {
 		if( $this->Student_Model->delete($id)){
+			$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
+		} else{
+			$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');
+		}
+		redirect('students');
+	}
+
+	public function hide($id){
+		if($this->Student_Model->hide($id)){
 			$this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
 		} else{
 			$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');

@@ -18,7 +18,7 @@
       <div class="form-group">
         <label for="barcode" class="control-label">Barcode</label>
         <?php
-        echo form_input(array('id'=>'barcode', 'name'=>'barcode', 'value'=>$records->barcode, 'class' => 'form-control'));
+        echo form_input(array('id'=>'barcode', 'name'=>'barcode', 'value'=>$records->barcode, 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
         ?>
         <span class = "text-danger"><?php echo form_error('barcode');?></span>
       </div>
@@ -31,8 +31,8 @@
             <span class="input-group-text">@</span>
           </div>
           <?php
-          // echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>$records->student_id, 'class' => 'form-control'));
-          echo form_dropdown('student_id"'.'class="form-control', $new_id);
+          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>$records->student_id, 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
+          // echo form_dropdown('student_id"'.'class="form-control', $new_id);
           ?>
         </div>
         <span class = "text-danger"><?php echo form_error('student_id');?></span>

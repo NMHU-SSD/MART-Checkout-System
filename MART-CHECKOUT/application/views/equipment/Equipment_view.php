@@ -4,12 +4,15 @@
 	<h1>Equipment</h1>
 	<br>
 
-	<!-- Search Bar -->
-	<input class="form-control" id="myInput" type="text" placeholder="Search..">
 
 	<?php if($_SESSION['user_role'] != "Student Employee"){?>
 		<a class="btn btn-primary float-right m-2" href = "<?php echo base_url(); ?>equipment/new">New Equipment</a>
 	<?php } ?>
+
+	<!-- Search Bar -->
+	<input class="form-control" id="myInput" type="text" placeholder="Search..">
+
+	<br>
 	<table class="table table-bordered table-hover">
 		<thead>
 			<tr>
@@ -21,13 +24,14 @@
 				<th scope="col">Notes</th>
 				<th scope="col">Account Purchased From</th>
 				<th scope="col">Status of Product</th>
-				<?php if($_SESSION['user_role'] != "Student Employee"){?>
-					<th scope="col">Edit</th>
-					<th scope="col">Delete</th>
+				<?php if($_SESSION['user_role'] != "Student Employee"){ ?>
+					<th scope="col">Hidden</th>
+				<th scope="col">Edit</th>
+				<th scope="col">Delete</th>
 				<?php } ?>
 			</tr>
 		</thead>
-		<tbody = id="equipmentTable">
+		<tbody id="equipmentTable">
 			<?php
 			$i = 1;
 			foreach($records as $r) {
@@ -56,12 +60,18 @@
 				echo "<td>".$r->account_purchased_from."</td>";
 				echo "<td>".$r->status."</td>";
 				if($_SESSION['user_role'] != "Student Employee"){
-					echo "<td><a href = '".base_url()."equipment/edit/"
-					.$r->barcode."'>Edit</a></td>";
+					if($r->isDeleted == "1"){
+						echo "<td>Not Showing</td>";
+					}else{
+						echo "<td>Showing</td>";
+					}
+				}
+
+				if($_SESSION['user_role'] != "Student Employee"){
+					echo "<td><a href = '".base_url()."equipment/edit/".$r->barcode."'>Edit</a></td>";
 
 					$delete = base_url().'equipment/delete/'.$r->barcode;
-					echo '<th scope="col"><a href="" data-href="'.$delete.'"
-					data-toggle="modal" data-target="#confirm-delete" data-message="'.$r->barcode.'" >Delete</a></th>';
+					echo '<th scope="col"><a href="" data-href="'.$delete.'"data-toggle="modal" data-target="#confirm-delete" data-message="'.$r->barcode.'" >Delete</a></th>';
 					echo "<tr>";
 				}
 			}
@@ -90,6 +100,8 @@
 		</div>
 	</div>
 
+
+
 </div>
 
 
@@ -103,4 +115,6 @@ $(document).ready(function(){
 		});
 	});
 });
+
+
 </script>

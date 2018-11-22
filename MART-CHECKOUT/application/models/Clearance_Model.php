@@ -42,5 +42,11 @@ class Clearance_Model extends CI_Model {
     $this->db->where("id", $id);
     $this->db->update("clearance", $data);
   }
+
+  public function hide_clearance($id){
+    $this->db->where('id', $id);
+    $this->db->update('clearance', array('isDeleted' => TRUE));
+    return true;
+  }
 }
 ?>

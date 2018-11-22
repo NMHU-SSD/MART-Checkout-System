@@ -29,7 +29,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">@</span>
           </div>
-          <input class="form-control" id="form_id" name="form_id" placeholder="" type="text"  aria-describedby="basic-addon1" value="<?php echo set_value('form_id'); ?>" />
+          <input class="form-control" id="form_id" name="form_id" autocomplete="off" type="number" placeholder="" type="text"  aria-describedby="basic-addon1" value="<?php echo set_value('form_id'); ?>" />
         </div>
 
         <span class="text-danger"><?php echo form_error('form_id'); ?></span>

@@ -27,7 +27,7 @@
         <div class="form-group">
           <label for="barcode" class="control-label">Equipment Barcode</label>
           <?php
-          echo form_input(array('id'=>'barcode', 'name'=>'barcode', 'value'=>$records->barcode, 'class'=>'form-control'));
+          echo form_input(array('id'=>'barcode', 'name'=>'barcode', 'value'=>$records->barcode, 'class'=>'form-control', 'autocomplete' => 'off', 'type' => 'number'));
           ?>
           <span class = "text-danger"><?php echo form_error('barcode');?></span>
         </div>

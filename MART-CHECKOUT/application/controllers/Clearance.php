@@ -16,7 +16,7 @@ class Clearance extends CI_Controller{
     if(!isset($_SESSION['logged_in'])){
       redirect('login');
     }
-    if($_SESSION['user_role'] != 'Manager'){
+    if($_SESSION['user_role'] == 'Student Employee'){
       redirect('dashboard');
     }
   }
@@ -124,4 +124,13 @@ class Clearance extends CI_Controller{
 		}
 		redirect('clearance');
 	}
+
+  public function hide($id){
+    if( $this->Clearance_Model->hide_clearance($id)){
+      $this->session->set_flashdata('message', '<div class="alert alert-success text-center">Successfully Deleted. </div>');
+    } else{
+      $this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Error. Please try again. </div>');
+    }
+    redirect('clearance');
+  }
 }

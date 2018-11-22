@@ -43,6 +43,10 @@ class Equipment_Model extends CI_Model {
     return true;
   }
 
-
+  public function hide($barcode){
+    $this->db->where('barcode', $barcode);
+    $this->db->update('equipment', array('isDeleted' => TRUE));
+    return true;
+  }
 }
 ?>
