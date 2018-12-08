@@ -5,23 +5,30 @@
       <br>
 
       <?php
-      // $new_id = array();
+      $new_id = array();
+      $new_barcode = array();
 
-      // foreach ($results as $r) {
-      //   $new_id[$r->banner_id] = $r->banner_id;
-      // }
+      foreach ($results as $r) {
+        $new_id[$r->banner_id] = $r->banner_id;
+      }
+
+      foreach ($equip as $e) {
+        $new_barcode[$e->barcode] = $e->barcode;
+      }
       ?>
 
       <div id="form" class="form-group">
         <?php
         echo form_open('reservations/add');
         echo form_label('Equipment Barcode');
-        echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode[]'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
+        echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode[]'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'text'));
         // echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode'), 'class' => 'form-control'));
 
         ?>
         <span class = "text-danger"><?php echo form_error('barcode');?></span>
       </div>
+      <label id="errorBarcode" name="errorBarcode"  style="display: none;"><font color="red">Barcode does not exist</font></label>
+
       <button type="button" class="btn btn-outline-secondary">Add Another Barcode</button>
       <br><br>
       <!-- Student ID -->
@@ -32,12 +39,14 @@
             <span class="input-group-text">@</span>
           </div>
           <?php
-          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>set_value('student_id'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
+          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>set_value('student_id'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'text'));
           // echo form_dropdown('student_id"'.'class="form-control', $new_id);
           ?>
         </div>
         <span class = "text-danger"><?php echo form_error('student_id');?></span>
       </div>
+      <label id="errorID" name="errorID"  style="display: none;"><font color="red">ID does not exist</font></label>
+
 
       <!-- Date Pickers -->
       <div class='row'>
@@ -152,6 +161,16 @@ $(function () {
 
 
 $(document).ready(function(){
+
+  var studentID=<?php echo json_encode($new_id); ?>;
+  console.log(typeof studentID);
+  console.log(studentID);
+
+  var equipBar=<?php echo json_encode($new_barcode); ?>;
+  console.log(typeof equipBar);
+  console.log(equipBar);
+
+
   $("button").click(function(){
     // form_input(
     //   array(
@@ -167,9 +186,44 @@ $(document).ready(function(){
       name: 'barcode[]',
       value: "<?php set_value('barcode') ?>",
       class: 'form-control',
-      type: "number",
+      type: "text",
       autocomplete: 'off'
     }).appendTo('form');
+  });
+
+  var regexID = /[^0-9]/g;
+  $("#student_id").focus(function() {
+    // user click into the text box
+    console.log('in');
+  }).blur(function() {
+    // user clicks out of thetext box
+    $(this).val($(this).val().replace(regexID, ''));
+    console.log('out');
+    var checkID = studentID.hasOwnProperty($(this).val());
+    if(checkID == false){
+      $("#errorID").show();
+    }else{
+      $("#errorID").hide();
+    }
+
+    console.log(checkID);
+  });
+
+  // regex allows capital letters, numbers, dashes, and underscores
+  var regexBarcode = /[^A-Z0-9\-\_]/g;
+  $("#barcode").focus(function() {
+    // user click into the text box
+    console.log('in');
+  }).blur(function() {
+    // user clicks out of thetext box
+    $(this).val($(this).val().replace(regexBarcode, ''));
+    console.log('out');
+    var checkBarcode = equipBar.hasOwnProperty($(this).val());
+    if(checkBarcode == false){
+      $("#errorBarcode").show();
+    }else{
+      $("#errorBarcode").hide();
+    }
   });
 });
 </script>

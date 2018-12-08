@@ -29,7 +29,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">@</span>
           </div>
-          <input class="form-control" id="form_id" name="form_id" autocomplete="off" type="number" placeholder="" type="text"  aria-describedby="basic-addon1" value="<?php echo set_value('form_id'); ?>" />
+          <input class="form-control" id="form_id" name="form_id" autocomplete="off" type="text" placeholder="" type="text"  aria-describedby="basic-addon1" value="<?php echo set_value('form_id'); ?>" />
         </div>
 
         <span class="text-danger"><?php echo form_error('form_id'); ?></span>
@@ -60,3 +60,17 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var $regexname = /[^0-9]/g;
+  $("#form_id").focus(function() {
+    // user click into the text box
+    console.log('in');
+  }).blur(function() {
+    // user clicks out of thetext box
+    $(this).val($(this).val().replace($regexname, ''));
+    console.log('out');
+  });
+});
+</script>

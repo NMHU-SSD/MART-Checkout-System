@@ -31,7 +31,7 @@
             <span class="input-group-text">@</span>
           </div>
           <?php
-          echo form_input(array('id'=>'banner_id','name'=>'banner_id', 'type' => 'number', 'value' => set_value('banner_id'), 'class' => 'form-control', 'autocomplete' => 'off'));
+          echo form_input(array('id'=>'banner_id','name'=>'banner_id', 'type' => 'text', 'value' => set_value('banner_id'), 'class' => 'form-control', 'autocomplete' => 'off'));
           ?>
         </div>
         <span class="text-danger"><?php echo form_error('banner_id'); ?></span>
@@ -55,7 +55,7 @@
       <!-- Phone Number -->
       <?php
       echo form_label('Phone');
-      echo form_input(array('id'=>'phone','name'=>'phone', 'value' => set_value('phone'), 'class' => 'form-control'));
+      echo form_input(array('id'=>'phone','name'=>'phone', 'value' => set_value('phone'), 'class' => 'form-control', 'pattern' => "^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$", 'title' => "123-456-7890"));
       ?>
       <span class = "text-danger"><?php echo form_error('phone');?></span>
       <br>
@@ -115,3 +115,27 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var $regexname = /[^0-9]/g;
+  $("#banner_id").focus(function() {
+    // user click into the text box
+    console.log('in');
+  }).blur(function() {
+    // user clicks out of thetext box
+    $(this).val($(this).val().replace($regexname, ''));
+    console.log('out');
+  });
+
+  $("#phone").focus(function() {
+    // user click into the text box
+    console.log('in');
+  }).blur(function() {
+    // user clicks out of thetext box
+    $(this).val($(this).val().replace($regexname, ''));
+    console.log('out');
+  });
+
+});
+</script>

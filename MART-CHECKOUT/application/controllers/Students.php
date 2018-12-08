@@ -66,7 +66,7 @@ class Students extends CI_Controller {
 				'banner_id' => $this->input->post('banner_id'),
 				'name' => $this->input->post('name'),
 				'email' => $this->input->post('email'),
-				'phone' => $this->input->post('phone'),
+				'phone' => preg_replace('/^(?:0|[1-9][0-9]*)$/', '', $this->input->post('phone')),
 				'clearance_level' => $clear,
 				'amount_owed' => $this->input->post('amount_owed'),
 				'enrollment' => $this->input->post('active'),
@@ -105,11 +105,12 @@ class Students extends CI_Controller {
 			$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 			$this->load->view('templates/navigation',$nav_items);
 
+
 			$post_vars = array(
 				'banner_id' => $this->input->post('banner_id'),
 				'name' => $this->input->post('name'),
 				'email' => $this->input->post('email'),
-				'phone' => $this->input->post('phone'),
+				'phone' => preg_replace('/^(?:0|[1-9][0-9]*)$/', '', $this->input->post('phone')),
 				'clearance_level' => $clear,
 				'amount_owed' => $this->input->post('amount_owed'),
 				'enrollment' => $this->input->post('active'),

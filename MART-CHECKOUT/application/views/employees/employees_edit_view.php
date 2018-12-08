@@ -59,3 +59,17 @@
   </div>
 
 </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var $regexname = /[^0-9]/g;
+  $("#form_id").focus(function() {
+    // user click into the text box
+    console.log('in');
+  }).blur(function() {
+    // user clicks out of thetext box
+    $(this).val($(this).val().replace($regexname, ''));
+    console.log('out');
+  });
+});
+</script>

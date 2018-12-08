@@ -18,7 +18,7 @@
       <div class="form-group">
         <label for="barcode" class="control-label">Barcode</label>
         <?php
-        echo form_input(array('id'=>'barcode', 'name'=>'barcode', 'value'=>$records->barcode, 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
+        echo form_input(array('id'=>'barcode', 'name'=>'barcode', 'value'=>$records->barcode, 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'text'));
         ?>
         <span class = "text-danger"><?php echo form_error('barcode');?></span>
       </div>
@@ -31,12 +31,14 @@
             <span class="input-group-text">@</span>
           </div>
           <?php
-          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>$records->student_id, 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'number'));
+          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>$records->student_id, 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'text'));
           // echo form_dropdown('student_id"'.'class="form-control', $new_id);
           ?>
         </div>
         <span class = "text-danger"><?php echo form_error('student_id');?></span>
       </div>
+      <label id="errorID" name="errorID"  style="display: none;"><font color="red">ID does not exist</font></label>
+
 
       <!-- Date Picker -->
       <div class='row'>
@@ -74,48 +76,84 @@
 
 
       <!-- <div class="form-group">
-        <label for="date_pickup" class="control-label">Date Pickup</label>
-        <?php
-        echo form_input(array('id'=>'date_pickup','name'=>'date_pickup', 'value'=>$records->date_pickup, 'type'=>"datetime-local", 'class'=>'form-control'));
-        ?>
-        <span class = "text-danger"><?php echo form_error('date_pickup');?></span>
-      </div>
-      <div class="form-group">
-        <label for="date_due" class="control-label">Date Due</label>
-        <?php
-        echo form_input(array('id'=>'date_due','name'=>'date_due', 'value'=>$records->date_due,'type'=>"datetime-local", 'class'=>'form-control'));
-        ?>
-        <span class = "text-danger"><?php echo form_error('date_due');?></span>
-      </div> -->
-
-      <!-- Notes -->
-      <div class="form-group">
-        <label for="notes" class="control-label">Notes</label>
-        <?php
-        echo form_textarea(array('id'=>'notes','name'=>'notes', 'value'=>$records->notes,'class'=>'form-control'));
-        ?>
-      </div>
-
-      <!-- Checked Out Checkbox -->
-      <div class="form-group">
-        <label for="checkedout" class="control-label">Checked Out</label>
-        <?php
-        if($records->isCheckedOut == FALSE){
-          echo form_checkbox(array('id' => 'checkedout', 'name' => 'checkedout', 'value' => 'true', 'checked' => FALSE));
-        }else{
-          echo form_checkbox(array('id' => 'checkedout', 'name' => 'checkedout', 'value' => 'true', 'checked' => TRUE));
-        }
-        ?>
-      </div>
-
-      <!-- Submit Button -->
-      <div class="form-group">
-        <?php
-        echo form_submit(array('type'=>'submit','value'=>'Update', 'class' => 'btn btn-primary'));
-        echo form_close();
-        ?>
-      </div>
-
+      <label for="date_pickup" class="control-label">Date Pickup</label>
+      <?php
+      echo form_input(array('id'=>'date_pickup','name'=>'date_pickup', 'value'=>$records->date_pickup, 'type'=>"datetime-local", 'class'=>'form-control'));
+      ?>
+      <span class = "text-danger"><?php echo form_error('date_pickup');?></span>
     </div>
+    <div class="form-group">
+    <label for="date_due" class="control-label">Date Due</label>
+    <?php
+    echo form_input(array('id'=>'date_due','name'=>'date_due', 'value'=>$records->date_due,'type'=>"datetime-local", 'class'=>'form-control'));
+    ?>
+    <span class = "text-danger"><?php echo form_error('date_due');?></span>
+  </div> -->
+
+  <!-- Notes -->
+  <div class="form-group">
+    <label for="notes" class="control-label">Notes</label>
+    <?php
+    echo form_textarea(array('id'=>'notes','name'=>'notes', 'value'=>$records->notes,'class'=>'form-control'));
+    ?>
   </div>
+
+  <!-- Checked Out Checkbox -->
+  <div class="form-group">
+    <label for="checkedout" class="control-label">Checked Out</label>
+    <?php
+    if($records->isCheckedOut == FALSE){
+      echo form_checkbox(array('id' => 'checkedout', 'name' => 'checkedout', 'value' => 'true', 'checked' => FALSE));
+    }else{
+      echo form_checkbox(array('id' => 'checkedout', 'name' => 'checkedout', 'value' => 'true', 'checked' => TRUE));
+    }
+    ?>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="form-group">
+    <?php
+    echo form_submit(array('type'=>'submit','value'=>'Update', 'class' => 'btn btn-primary'));
+    echo form_close();
+    ?>
+  </div>
+
 </div>
+</div>
+</div>
+
+<script type="text/javascript">
+
+var something=<?php echo json_encode($new_id); ?>;
+console.log(typeof something);
+console.log(something);
+
+var regexID = /[^0-9]/g;
+$("#student_id").focus(function() {
+  // user click into the text box
+  console.log('in');
+}).blur(function() {
+  // user clicks out of thetext box
+  $(this).val($(this).val().replace(regexID, ''));
+  console.log('out');
+  var checkID = something.hasOwnProperty($(this).val());
+  if(checkID == false){
+    $("#errorID").show();
+  }else{
+    $("#errorID").hide();
+  }
+
+  console.log(checkID);
+});
+
+// regex allows capital letters, numbers, dashes, and underscores
+var regexBarcode = /[^A-Z0-9\-\_]/g;
+$("#barcode").focus(function() {
+  // user click into the text box
+  console.log('in');
+}).blur(function() {
+  // user clicks out of thetext box
+  $(this).val($(this).val().replace(regexBarcode, ''));
+  console.log('out');
+});
+</script>

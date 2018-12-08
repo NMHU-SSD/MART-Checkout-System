@@ -21,7 +21,7 @@
         <div class="form-group">
           <label for="barcode" class="control-label">Equipment Barcode</label>
           <?php
-          echo form_input(array('id'=>'barcode', 'name'=>'barcode', 'value'=>$records->barcode, 'class'=>'form-control', 'autocomplete' => 'off', 'type' => 'number'));
+          echo form_input(array('id'=>'barcode', 'name'=>'barcode', 'value'=>$records->barcode, 'class'=>'form-control', 'autocomplete' => 'off', 'type' => 'text'));
           ?>
           <span class = "text-danger"><?php echo form_error('barcode');?></span>
         </div>
@@ -51,3 +51,17 @@
       </div>
     </div>
   </div>
+
+  <script type="text/javascript">
+
+  // regex allows capital letters, numbers, dashes, and underscores
+  var regexBarcode = /[^A-Z0-9\-\_]/g;
+  $("#barcode").focus(function() {
+    // user click into the text box
+    console.log('in');
+  }).blur(function() {
+    // user clicks out of thetext box
+    $(this).val($(this).val().replace(regexBarcode, ''));
+    console.log('out');
+  });
+  </script>
