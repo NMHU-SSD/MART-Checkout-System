@@ -23,11 +23,10 @@
         echo form_label('Equipment Barcode');
         echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode[]'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'text'));
         // echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode'), 'class' => 'form-control'));
-
         ?>
         <span class = "text-danger"><?php echo form_error('barcode');?></span>
+        <label id="errorBarcode1" name="errorBarcode1"  style="display: none; color: red">Barcode does not exist</label>
       </div>
-      <label id="errorBarcode" name="errorBarcode"  style="display: none;"><font color="red">Barcode does not exist</font></label>
 
       <button type="button" class="btn btn-outline-secondary">Add Another Barcode</button>
       <br><br>
@@ -160,70 +159,72 @@ $(function () {
 });
 
 
-$(document).ready(function(){
+// $(document).ready(function(){
 
-  var studentID=<?php echo json_encode($new_id); ?>;
-  console.log(typeof studentID);
-  console.log(studentID);
+var studentID=<?php echo json_encode($new_id); ?>;
+var equipBar=<?php echo json_encode($new_barcode); ?>;
+console.log(equipBar);
 
-  var equipBar=<?php echo json_encode($new_barcode); ?>;
-  console.log(typeof equipBar);
-  console.log(equipBar);
+// var for created input
+var btnClick = 2;
+var temp = 1;
 
 
-  $("button").click(function(){
-    // form_input(
-    //   array(
-    //     'id'=>'barcode',
-    //     'name'=>'barcode[]',
-    //     'value'=>set_value('barcode'),
-    //     'class' => 'form-control'
-    //   ));
-    // alert("The paragraph was clicked.");
-    $('<input>').attr({
-      // type: 'hidden',
-      id: 'barcode',
-      name: 'barcode[]',
-      value: "<?php set_value('barcode') ?>",
-      class: 'form-control',
-      type: "text",
-      autocomplete: 'off'
-    }).appendTo('form');
-  });
+var regexBarcode = /[^A-Z0-9\-\_]/g;
 
-  var regexID = /[^0-9]/g;
-  $("#student_id").focus(function() {
-    // user click into the text box
-    console.log('in');
-  }).blur(function() {
-    // user clicks out of thetext box
-    $(this).val($(this).val().replace(regexID, ''));
-    console.log('out');
-    var checkID = studentID.hasOwnProperty($(this).val());
-    if(checkID == false){
-      $("#errorID").show();
-    }else{
-      $("#errorID").hide();
-    }
+// Create input and label when add another barcode
+// NOTE: only works once bacuse the temp is getting over written
+$("button").click(function(){
+  temp++;
+  $('<div id="tempBarcode'+btnClick+'"></div>').append(
+    $('<input id="barcode'+btnClick+'" name="barcode[]" value="<?php set_value('barcode') ?>" class="form-control" type="text" autocomplete="off"></input>').blur(function(){
+      $(this).val($(this).val().replace(regexBarcode, ''));
+      var checkBarcode = equipBar.hasOwnProperty($(this).val());
+      if( checkBarcode == false){
+        console.log("Show label: "+ temp);
+        console.log('#errorBarcode'+temp);
+        $('#errorBarcode'+temp).show();
+      }else{
+        console.log("Hide label: "+temp);
+        $('#errorBarcode'+temp).hide();
+      }
 
-    console.log(checkID);
-  });
-
-  // regex allows capital letters, numbers, dashes, and underscores
-  var regexBarcode = /[^A-Z0-9\-\_]/g;
-  $("#barcode").focus(function() {
-    // user click into the text box
-    console.log('in');
-  }).blur(function() {
-    // user clicks out of thetext box
-    $(this).val($(this).val().replace(regexBarcode, ''));
-    console.log('out');
-    var checkBarcode = equipBar.hasOwnProperty($(this).val());
-    if(checkBarcode == false){
-      $("#errorBarcode").show();
-    }else{
-      $("#errorBarcode").hide();
-    }
-  });
+    })
+).appendTo('#form');
+  $('#tempBarcode'+btnClick).append('<label id="errorBarcode'+btnClick+'" name="errorBarcode'+btnClick+'"  style="display: none; color: red">Barcode does not exist</label>');
+  btnClick++;
 });
+
+
+
+var regexID = /[^0-9]/g;
+$("#student_id").blur(function() {
+  // user clicks out of thetext box
+  $(this).val($(this).val().replace(regexID, ''));
+  console.log('out');
+  var checkID = studentID.hasOwnProperty($(this).val());
+  if(checkID == false){
+    $("#errorID").show();
+  }else{
+    $("#errorID").hide();
+  }
+  console.log(checkID);
+});
+
+// regex allows capital letters, numbers, dashes, and underscores
+// var regexBarcode = /[^A-Z0-9\-\_]/g;
+// input that isn't created
+$("#barcode").blur(function() {
+  // user clicks out of thetext box
+  $(this).val($(this).val().replace(regexBarcode, ''));
+  console.log('out');
+  var checkBarcode = equipBar.hasOwnProperty($(this).val());
+  if(checkBarcode == false){
+    $("#errorBarcode1").show();
+  }else{
+    $("#errorBarcode1").hide();
+  }
+});
+
+
 </script>
