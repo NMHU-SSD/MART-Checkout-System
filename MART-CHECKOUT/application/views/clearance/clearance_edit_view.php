@@ -4,11 +4,9 @@
       <h1>Edit Clearance</h1>
       <br>
       <?php
-        echo form_open('clearance/update/'.$records->id);
+        echo form_open('clearance/update/'.$records->id, 'onsubmit="return validateForm()"');
         echo form_hidden('old_id', $records->id);
         ?>
-
-        <!-- TODO: maybe insert invisiable field to hold ID -->
 
         <div class="form-group">
           <label for="clearance" class="control-label">Clearance Level</label>
@@ -53,6 +51,35 @@
   </div>
 
   <script type="text/javascript">
+
+  $(function () {
+    // Put User in the first input field when page loads
+    $("#clearance").focus();
+  });
+
+  function validateForm(){
+    // Get input values
+    var fClear = document.getElementById("clearance").value;
+    var fBarcode = document.getElementById("barcode").value;
+    var fDesc = document.getElementById("description").value;
+    var fClass = document.getElementById("class").value;
+
+    // Check input values
+    if(fClear == ""){
+      alert("Clearance Level cannot be empty");
+      return false;
+    } else if(fBarcode == ""){
+      alert("Barcode cannot be empty");
+      return false;
+    }else if(fDesc == ""){
+      alert("Description cannot be empty");
+      return false;
+    }else if(fClass == ""){
+      alert("Class cannot be empty");
+      return false;
+    }
+
+  }
 
   // regex allows capital letters, numbers, dashes, and underscores
   var regexBarcode = /[^A-Z0-9\-\_]/g;

@@ -112,7 +112,9 @@ class Reservations extends CI_Controller {
 			$data['records'] = $this->Reservations_Model->get_reservation($id);
 			$results1 = $this->Student_Model->get_students();
 			$results2 = $this->Faculty_Model->get_faculties();
+			$equip = $this->Equipment_Model->get_equipment();
 			$data['results'] = array_merge($results1, $results2);
+			$data['equip'] = $equip;
 			$this->load->view('reservations/Reservations_edit_view',$data);
 			$this->load->view('templates/footer');
 		}

@@ -18,7 +18,7 @@
           $new_clear[$l->id] = $l->level;
         }
 
-        echo form_open('equipment/add');
+        echo form_open('equipment/add', 'onsubmit="return validateForm()"');
         ?>
 
         <!-- Barcode -->
@@ -105,6 +105,33 @@
 
 
   <script type="text/javascript">
+
+  $(function () {
+    // Put User in the first input field when page loads
+    $("#barcode").focus();
+  });
+
+  function validateForm(){
+    var fBarcode = document.getElementById("barcode").value;
+    var fName = document.getElementById("name").value;
+    var fDesc = document.getElementById("description").value;
+    var fPurch = document.getElementById("account_purchased_from").value;
+
+
+    if(fBarcode == ""){
+      alert("Barcode cannot be empty");
+      return false;
+    }else if(fName == ""){
+      alert(" Name cannot be empty");
+      return false;
+    }else if(fDesc == ""){
+      alert("Description cannot be empty");
+      return false;
+    }else if(fPurch == ""){
+      alert("Account Purchased From cannot be empty");
+      return false;
+    }
+  }
 
   // regex allows capital letters, numbers, dashes, and underscores
   var regexBarcode = /[^A-Z0-9\-\_]/g;

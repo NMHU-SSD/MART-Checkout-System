@@ -19,16 +19,16 @@
 
       <div id="form" class="form-group">
         <?php
-        echo form_open('reservations/add');
+        echo form_open('reservations/add', 'onsubmit="return validateForm()"');
         echo form_label('Equipment Barcode');
-        echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode[]'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'text'));
+        echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode[]'), 'class' => 'form-control inpVal', 'autocomplete' => 'off', 'type' => 'text'));
         // echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode'), 'class' => 'form-control'));
         ?>
         <span class = "text-danger"><?php echo form_error('barcode');?></span>
-        <label id="errorBarcode1" name="errorBarcode1"  style="display: none; color: red">Barcode does not exist</label>
+        <label class="cError" id="errorBarcode1" name="errorBarcode1"  style="display: none; color: red">Barcode does not exist</label>
       </div>
 
-      <button type="button" class="btn btn-outline-secondary">Add Another Barcode</button>
+      <button type="button" class="btn btn-outline-secondary btnAddBar" style="display: none">Add Another Barcode</button>
       <br><br>
       <!-- Student ID -->
       <div class="form-group">
@@ -38,7 +38,7 @@
             <span class="input-group-text">@</span>
           </div>
           <?php
-          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>set_value('student_id'), 'class' => 'form-control', 'autocomplete' => 'off', 'type' => 'text'));
+          echo form_input(array('id'=>'student_id','name'=>'student_id', 'value'=>set_value('student_id'), 'class' => 'form-control inpVal', 'autocomplete' => 'off', 'type' => 'text'));
           // echo form_dropdown('student_id"'.'class="form-control', $new_id);
           ?>
         </div>
@@ -156,75 +156,276 @@ $(function () {
   $("#end").on("dp.change", function (e) {
     $('#pickup').data("DateTimePicker").maxDate(e.date);
   });
+  // Put User in the first input field when page loads
+  $("#barcode").focus();
 });
 
 
-// $(document).ready(function(){
-
+// set studentIDs and equipment barcodes for validating input fields
 var studentID=<?php echo json_encode($new_id); ?>;
 var equipBar=<?php echo json_encode($new_barcode); ?>;
-console.log(equipBar);
 
 // var for created input
 var btnClick = 2;
 var temp = 1;
 
+// variables for validating input fields
+var isStudentID = false;
+var isEquipBar = false;
+var isArrEquipBar = [];
+var inputValues = [];
 
+// regular expressions for input fields
+// regex allows capital letters, numbers, dashes, and underscores
 var regexBarcode = /[^A-Z0-9\-\_]/g;
+// regex allows numbers
+var regexID = /[^0-9]/g;
 
 // Create input and label when add another barcode
-// NOTE: only works once bacuse the temp is getting over written
 $("button").click(function(){
   temp++;
+  $(".btnAddBar").hide();
   $('<div id="tempBarcode'+btnClick+'"></div>').append(
-    $('<input id="barcode'+btnClick+'" name="barcode[]" value="<?php set_value('barcode') ?>" class="form-control" type="text" autocomplete="off"></input>').blur(function(){
-      $(this).val($(this).val().replace(regexBarcode, ''));
-      var checkBarcode = equipBar.hasOwnProperty($(this).val());
-      if( checkBarcode == false){
-        console.log("Show label: "+ temp);
-        console.log('#errorBarcode'+temp);
-        $('#errorBarcode'+temp).show();
-      }else{
-        console.log("Hide label: "+temp);
-        $('#errorBarcode'+temp).hide();
-      }
+    $('<input id="barcode'+btnClick+'" name="barcode[]" value="<?php set_value('barcode') ?>" class="form-control cBarcode inpVal" type="text" autocomplete="off"></input>').blur(function(){
 
+      // Get value of input field and compare to regex and if not met clear field
+      $(this).val($(this).val().replace(regexBarcode, ''));
+      // check input value is in the array of equipBar arrat
+      var checkBarcode = equipBar.hasOwnProperty($(this).val());
+
+      // current inputs id
+      temp = $(this).attr('id').slice(-1);
+      var name = $(this).val();
+
+      // loop through all elements with cError class
+      $('.cError').each(function(i,obj){
+
+        // name if so we can break
+        // get id and get last character and compare to temp
+        checkBar: if(obj['id'].slice(-1) == temp){
+          // set index to false so there are not any correct barcodes
+          isArrEquipBar[parseInt(temp) - 2] = false;
+
+          // Set index to name so there are no duplications
+          inputValues[parseInt(temp) - 1] = name;
+
+          // Check if barcodes are the same
+          for(var j = 0; j < inputValues.length; j++){
+            if(inputValues[parseInt(temp) - 1] ==  inputValues[j] && (parseInt(temp) - 1) != j){
+              alert("Barcodes are the same.");
+              break checkBar;
+            }
+          }
+          // if barcode doesn't exist
+          if( checkBarcode == false){
+            // shoe label, hide button, and in array set to false
+            obj['style']['display'] = '';
+            $(".btnAddBar").hide();
+            isArrEquipBar[parseInt(temp) - 2] = false;
+          }else{ // if barcode is valid
+            // hide label, show button, and set array index to true
+            obj['style']['display'] = 'none';
+            $(".btnAddBar").show();
+            isArrEquipBar[parseInt(temp) - 2] = true;
+          }
+        }
+      })
     })
-).appendTo('#form');
-  $('#tempBarcode'+btnClick).append('<label id="errorBarcode'+btnClick+'" name="errorBarcode'+btnClick+'"  style="display: none; color: red">Barcode does not exist</label>');
+  ).appendTo('#form');
+  // Make barcide
+  $('#tempBarcode'+btnClick).append('<label class="cError" id="errorBarcode'+btnClick+'" name="errorBarcode'+btnClick+'"  style="display: none; color: red">Barcode does not exist</label>');
   btnClick++;
 });
 
-
-
-var regexID = /[^0-9]/g;
-$("#student_id").blur(function() {
-  // user clicks out of thetext box
-  $(this).val($(this).val().replace(regexID, ''));
-  console.log('out');
-  var checkID = studentID.hasOwnProperty($(this).val());
-  if(checkID == false){
-    $("#errorID").show();
-  }else{
-    $("#errorID").hide();
+// Click into student id input
+$("#student_id").focus(function(){
+  // if barcode is valid
+  if(isStudentID == true){
+    // Show dialog asking if they want to enter another ID
+    if (confirm("Are you sure that you want to change StudentID?")) {
+      // is yes, erase current text
+      $(this).val("");
+    } else {
+      // if false kick them out of the input field
+      $(this).blur();
+    }
   }
-  console.log(checkID);
 });
 
-// regex allows capital letters, numbers, dashes, and underscores
-// var regexBarcode = /[^A-Z0-9\-\_]/g;
+// user clicks out of input field
+$("#student_id").blur(function() {
+  // compare input value to rexeg
+  $(this).val($(this).val().replace(regexID, ''));
+  // check if input value has a valid id
+  var checkID = studentID.hasOwnProperty($(this).val());
+  // if ID doesn't exist
+  if(checkID == false){
+    $("#errorID").show();
+    isStudentID = false;
+  }else{// if id does esist
+    $("#errorID").hide();
+    isStudentID = true;
+  }
+});
+
+// TODO: On Generated barcodes ask the user if they would like to delete the
+// TODO: the information in the input field
+
+
+// if user goes into input field
+$("#barcode").focus(function(){
+  // if barcode is valid
+  if(isEquipBar == true){
+    // shoe dialog
+    if (confirm("Are you sure that you want to change Equipment Barcode?")) {
+      $(this).val("");
+    } else {
+      $(this).blur();
+    }
+  }
+});
+
 // input that isn't created
 $("#barcode").blur(function() {
   // user clicks out of thetext box
   $(this).val($(this).val().replace(regexBarcode, ''));
-  console.log('out');
-  var checkBarcode = equipBar.hasOwnProperty($(this).val());
-  if(checkBarcode == false){
-    $("#errorBarcode1").show();
-  }else{
-    $("#errorBarcode1").hide();
+  // check if text box is not empty
+  if($(this).val != ""){
+    // cheif if equipBar array has input vlaue
+    var checkBarcode = equipBar.hasOwnProperty($(this).val());
+
+    // if it doesn't
+    if(checkBarcode == false){
+      // shoe error
+      $("#errorBarcode1").show();
+      // if only equipment input
+      if(isArrEquipBar.length == 0){
+        // hide button
+        $(".btnAddBar").hide();
+      }
+      // set to false
+      isEquipBar = false;
+      // add value to array
+      inputValues[0] = $(this).val();
+    }else{ // if barcode is valid
+      // hide error label
+      $("#errorBarcode1").hide();
+      if(isArrEquipBar.length == 0){
+        $(".btnAddBar").show();
+      }
+      isEquipBar = true;
+      inputValues[0] = $(this).val();
+    }
   }
 });
 
+// class inVal enter key pressed
+$(".inpVal").keypress(function (event) {
+  if (event.keyCode === 10 || event.keyCode === 13) {
+    // stop event
+    event.preventDefault();
+    // kick them out of the input field
+    $(this).blur();
+  }
+});
+
+
+var curTemp = new Date(currentDate());
+// validate the form before submit
+function validateForm() {
+  // input values
+  var equipBarcode = document.getElementById("barcode").value;
+  var arrEquipBar = [];
+  var sID = document.getElementById("student_id").value;
+  var dPickup = document.getElementById("date_pickup").value;
+  var dDue = document.getElementById("date_due").value;
+
+  // make new date objects from pickup, due, and current date
+  var pTemp = new Date(dPickup);
+  var dTemp = new Date(dDue);
+
+  // Check if any input fields are empty
+  if (equipBarcode == "") {
+    alert("Equipment id must be filled out");
+    return false;
+  }else if (sID == "") {
+    alert("Student id must be filled out");
+    return false;
+  }else if (dPickup == "") {
+    alert("A pickup date must be selected");
+    return false;
+  }else if (dDue == "") {
+    alert("A due date must be selected");
+    return false;
+  }
+
+  // Check if dates are valid
+  if((pTemp>=curTemp) === false){
+    alert("Pickup date cannot be before todays date");
+    return false;
+  }else if((dTemp>pTemp) === false){
+    alert("Due date cannot be before Pickup date");
+    return false;
+  }
+
+  // Check if student id is a valid id
+  if(isStudentID == false){
+    alert("Enter a valid Student ID");
+    return false;
+  }
+
+  // Check if the first equipment barcode is a valid barcode
+  if(isEquipBar == false){
+    alert("Enter a valid Equipment Barcode");
+    return false;
+  }
+
+  // only loop through generated barcodes if there are some
+  if(arrEquipBar.length > 0){
+    // loop through all elements with cBarcode class
+    // NOTE: starts at new generated buttons
+    $('.cBarcode').each(function(i,obj){
+      console.log(obj['id']);
+      arrEquipBar.push(document.getElementById(obj['id']).value);
+    });
+
+    for(var i = 0; i < arrEquipBar.length; i++){
+      // check if current input has text in them
+      if(arrEquipBar[i] == ""){
+        alert((i+2) + " Equipment id must be filled out");
+        return false;
+      }
+
+      // check if current input has valid equipment barcode
+      if(isArrEquipBar[i] == false){
+        alert("Enter a valid Equipment Barcode on " + (i+2));
+        return false;
+      }
+    }
+  }
+}
+
+// Get current date nad time in 01/26/2019 9:42 AM format
+// Code from: https://stackoverflow.com/a/4929629
+function currentDate(){
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1; //January is 0!
+
+  var yyyy = today.getFullYear();
+  if (dd < 10) {
+    dd = '0' + dd;
+  }
+
+  if (mm < 10) {
+    mm = '0' + mm;
+  }
+
+  // Code from: https://stackoverflow.com/a/36822046
+  var currentTime = today.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+  var today = mm + '/' + dd + '/' + yyyy + " " + currentTime;
+  return today;
+}
 
 </script>

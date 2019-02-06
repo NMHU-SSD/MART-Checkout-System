@@ -5,7 +5,7 @@
       <h1>Edit Employee</h1>
       <br>
 
-      <?php echo form_open('employees/update/'.$employee['banner_id']); ?>
+      <?php echo form_open('employees/update/'.$employee['banner_id'], 'onsubmit="return validateForm()"'); ?>
 
       <!-- user type -->
       <div class="form-group">
@@ -61,6 +61,22 @@
 </div>
 
 <script type="text/javascript">
+
+$(function () {
+  // Put User in the first input field when page loads
+  $("#form_name").focus();
+});
+
+function validateForm(){
+
+  var fName = document.getElementById("form_name").value;
+
+  if(fName == ""){
+    alert("Name must not be empty");
+    return false;
+  }
+}
+
 $(document).ready(function(){
   var $regexname = /[^0-9]/g;
   $("#form_id").focus(function() {

@@ -92,7 +92,9 @@ class User_Model extends CI_Model{
     $enum_fields = $enum_array[1];
     foreach ($enum_fields as $key=>$value)
     {
-      $enums[$value] = $value;
+      if($value != "Admin" || $value != "admin"){
+        $enums[$value] = $value;
+      }
     }
     return $enums;
   }

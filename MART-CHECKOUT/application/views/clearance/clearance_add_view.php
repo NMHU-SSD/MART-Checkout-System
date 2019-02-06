@@ -3,7 +3,7 @@
     <div class="col-sm-6 col-lg-6 ml-auto mr-auto mt-5">
       <h1>Add New Clearance Level</h1>
       <br>
-      <?php echo form_open('clearance/add'); ?>
+      <?php echo form_open('clearance/add', 'onsubmit="return validateForm()"'); ?>
 
       <!-- Clearance Level Input and Label -->
       <div class="form-group">
@@ -48,6 +48,36 @@
 </div>
 
 <script type="text/javascript">
+
+$(function () {
+  // Put User in the first input field when page loads
+  $("#clearance").focus();
+});
+
+function validateForm(){
+  // Get input values
+  var fClear = document.getElementById("clearance").value;
+  var fBarcode = document.getElementById("barcode").value;
+  var fDesc = document.getElementById("description").value;
+  var fClass = document.getElementById("class").value;
+
+  // Check input values
+  if(fClear == ""){
+    alert("Clearance Level cannot be empty");
+    return false;
+  } else if(fBarcode == ""){
+    alert("Barcode cannot be empty");
+    return false;
+  }else if(fDesc == ""){
+    alert("Description cannot be empty");
+    return false;
+  }else if(fClass == ""){
+    alert("Class cannot be empty");
+    return false;
+  }
+
+}
+
 // regex allows capital letters, numbers, dashes, and underscores
 var regexBarcode = /[^A-Z0-9\-\_]/g;
 $("#barcode").focus(function() {

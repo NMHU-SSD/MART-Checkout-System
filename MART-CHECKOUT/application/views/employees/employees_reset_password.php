@@ -2,13 +2,13 @@
   <div class="row pl-2 pr-2">
     <div class="col-sm-6 col-lg-6 ml-auto mr-auto mt-5">
 
-<?php echo $this->session->flashdata('message'); ?>
+      <?php echo $this->session->flashdata('message'); ?>
 
       <h1>Reset Employee Password</h1>
       <br>
 
       <?php if($_SESSION['user_role'] == "Manager" || $_SESSION['user_role'] == "Assistant"){ ?>
-        <?php echo form_open('employees/reset_password/'.$employee['banner_id']); ?>
+        <?php echo form_open('employees/reset_password/'.$employee['banner_id'], 'onsubmit="return validateForm()"'); ?>
 
         <!-- banner id -->
         <div class="form-group">
@@ -52,3 +52,27 @@
     </div>
   </div>
 </div>
+
+<script>
+$(function () {
+  // Put User in the first input field when page loads
+  $("#form_name").focus();
+});
+
+function validateForm(){
+  var fName = document.getElementById("form_name").value;
+  var fPass = document.getElementById("form_password").value;
+  var fRePass = document.getElementById("form_re-enter_password").value;
+
+  if(fName == ""){
+    alert("Name must not be empty");
+    return false;
+  }else if(fPass == ""){
+    alert("Password must not be empty");
+    return false;
+  }else if(fRePass == ""){
+    alert("Re-Enter Password must not be empty");
+    return false;
+  }
+}
+</script>

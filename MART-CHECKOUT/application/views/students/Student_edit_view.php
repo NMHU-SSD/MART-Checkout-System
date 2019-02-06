@@ -20,7 +20,7 @@
         $new_clear[$l->id] = $l->level;
       }
 
-      echo form_open('students/update/'.$records->banner_id);
+      echo form_open('students/update/'.$records->banner_id, 'onsubmit="return validateForm()"');
       echo form_hidden('old_banner_id', $records->banner_id);
       ?>
 
@@ -138,6 +138,40 @@
 </div>
 
 <script type="text/javascript">
+
+$(function () {
+  // Put User in the first input field when page loads
+  $("#banner_id").focus();
+});
+
+function validateForm(){
+
+  // Grab all input fields
+  var fBanner = document.getElementById("banner_id").value;
+   var fName = document.getElementById("name").value;
+  var fEmail = document.getElementById("email").value;
+  var fPhone = document.getElementById("phone").value;
+  var fOwed = document.getElementById("amount_owed").value;
+
+  // check if any input fields are empty
+  if(fBanner == ""){
+    alert("Banner ID cannot be empty");
+    return false;
+  }else if(fName == ""){
+    alert("Name cannot be empty");
+    return false;
+  }else if(fEmail == ""){
+    alert("Email cannot be empty");
+    return false;
+  }else if(fPhone == ""){
+    alert("Phone cannot be empty");
+    return false;
+  }else if(fOwed == ""){
+    alert("Amount Owed cannot be empty");
+    return false;
+  }
+}
+
 $(document).ready(function(){
   var $regexname = /[^0-9]/g;
   $("#banner_id").focus(function() {

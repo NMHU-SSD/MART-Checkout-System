@@ -13,7 +13,7 @@
         'eligible' => 'Eligible'
       );
 
-      echo form_open('faculty/add');
+      echo form_open('faculty/add', 'onsubmit="return validateForm()"');
       ?>
 
       <!-- banner id -->
@@ -94,6 +94,36 @@
 </div>
 
 <script type="text/javascript">
+
+$(function () {
+  // Put User in the first input field when page loads
+  $("#banner_id").focus();
+});
+
+function validateForm(){
+
+  // Grab all input fields
+  var fBanner = document.getElementById("banner_id").value;
+   var fName = document.getElementById("`name`").value;
+  var fEmail = document.getElementById("email").value;
+  var fPhone = document.getElementById("phone").value;
+
+  // check if any input fields are empty
+  if(fBanner == ""){
+    alert("Banner ID cannot be empty");
+    return false;
+  }else if(fName == ""){
+    alert("Name cannot be empty");
+    return false;
+  }else if(fEmail == ""){
+    alert("Email cannot be empty");
+    return false;
+  }else if(fPhone == ""){
+    alert("Phone cannot be empty");
+    return false;
+  }
+}
+
 $(document).ready(function(){
   var $regexname = /[^0-9]/g;
   $("#banner_id").focus(function() {

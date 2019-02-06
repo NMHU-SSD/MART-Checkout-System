@@ -7,7 +7,7 @@
       <h1>Register New User</h1>
       <br>
 
-      <?php echo form_open('employees/register') ?>
+      <?php echo form_open('employees/register', 'onsubmit="return validateForm()"') ?>
 
       <!-- user type -->
       <div class="form-group">
@@ -62,6 +62,30 @@
 </div>
 
 <script type="text/javascript">
+$(function () {
+  // Put User in the first input field when page loads
+  $("#form_id").focus();
+});
+
+function validateForm(){
+  // Get input
+  var fBannerID = document.getElementById("form_id").value;
+  var fName = document.getElementById("form_name").value;
+  var fPass = document.getElementById("form_password").value;
+
+  // Tell the user that there needs to be text
+  if(fBannerID == ""){
+    alert("Banner ID must not be empty");
+    return false;
+  }else if(fName == ""){
+    alert("Name must not be empty");
+    return false;
+  }else if(fPass == ""){
+    alert("Password must not be empty");
+    return false;
+  }
+}
+
 $(document).ready(function(){
   var $regexname = /[^0-9]/g;
   $("#form_id").focus(function() {

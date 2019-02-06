@@ -20,7 +20,7 @@
         $new_clear[$l->id] = $l->level;
       }
 
-      echo form_open('students/add');
+      echo form_open('students/add', 'onsubmit="return validateForm()"');
       ?>
 
       <!-- banner id -->
@@ -55,7 +55,7 @@
       <!-- Phone Number -->
       <?php
       echo form_label('Phone');
-      echo form_input(array('id'=>'phone','name'=>'phone', 'value' => set_value('phone'), 'class' => 'form-control', 'pattern' => "^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$", 'title' => "123-456-7890"));
+    echo form_input(array('id'=>'phone','name'=>'phone', 'value' => set_value('phone'), 'class' => 'form-control'/*, 'pattern' => "^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$", 'title' => "123-456-7890"*/));
       ?>
       <span class = "text-danger"><?php echo form_error('phone');?></span>
       <br>
@@ -117,6 +117,40 @@
 </div>
 
 <script type="text/javascript">
+
+$(function () {
+  // Put User in the first input field when page loads
+  $("#banner_id").focus();
+});
+
+function validateForm(){
+
+  // Grab all input fields
+  var fBanner = document.getElementById("banner_id").value;
+   var fName = document.getElementById("`name`").value;
+  var fEmail = document.getElementById("email").value;
+  var fPhone = document.getElementById("phone").value;
+  var fOwed = document.getElementById("amount_owed").value;
+
+  // check if any input fields are empty
+  if(fBanner == ""){
+    alert("Banner ID cannot be empty");
+    return false;
+  }else if(fName == ""){
+    alert("Name cannot be empty");
+    return false;
+  }else if(fEmail == ""){
+    alert("Email cannot be empty");
+    return false;
+  }else if(fPhone == ""){
+    alert("Phone cannot be empty");
+    return false;
+  }else if(fOwed == ""){
+    alert("Amount Owed cannot be empty");
+    return false;
+  }
+}
+
 $(document).ready(function(){
   var $regexname = /[^0-9]/g;
   $("#banner_id").focus(function() {
