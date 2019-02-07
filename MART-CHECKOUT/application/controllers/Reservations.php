@@ -46,9 +46,6 @@ class Reservations extends CI_Controller {
 	}
 
 	public function add() {
-
-
-
 		$this->form_validation->set_rules('barcode[]','item barcode', 'trim|required|is_unique[reservations.barcode]');
 		$this->form_validation->set_rules('student_id', 'student id', 'required');
 		$this->form_validation->set_rules('date_pickup', 'date pickup', 'required');
@@ -59,8 +56,16 @@ class Reservations extends CI_Controller {
 			$this->load->view('templates/header');
 			$nav_items = $this->User_Model->get_navigation($_SESSION['user_role']);
 			$this->load->view('templates/navigation',$nav_items);
-			$this->load->view('reservations/Reservations_add_view');
+			// $results1 = $this->Student_Model->get_students();
+			// $results2 = $this->Faculty_Model->get_faculties();
+			// $equip = $this->Equipment_Model->get_equipment();
+			// $data['results'] = array_merge($results1, $results2);
+			// $data['equip'] = $equip;
+			// $this->load->view('reservations/Reservations_add_view', $data);
 			$this->load->view('templates/footer');
+
+			$this->session->set_flashdata('message', '<div class="alert alert-danger text-center">Something went wrong. </div>');
+redirect('reservations');
 
 		} else {
 

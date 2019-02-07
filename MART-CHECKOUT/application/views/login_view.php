@@ -50,11 +50,16 @@
 
 <script>
 $(function () {
+
+	$("#form_id").focus();
+
 	$("#chkPassword").click(function () {
 		if ($(this).is(":checked")) {
 			$("#divPassword").show();
+			$("#form_password").focus();
 		} else {
 			$("#divPassword").hide();
+			$("#form_id").focus();
 		}
 	});
 });

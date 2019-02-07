@@ -22,13 +22,12 @@
         echo form_open('reservations/add', 'onsubmit="return validateForm()"');
         echo form_label('Equipment Barcode');
         echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode[]'), 'class' => 'form-control inpVal', 'autocomplete' => 'off', 'type' => 'text'));
-        // echo form_input(array('id'=>'barcode','name'=>'barcode[]', 'value'=>set_value('barcode'), 'class' => 'form-control'));
         ?>
         <span class = "text-danger"><?php echo form_error('barcode');?></span>
         <label class="cError" id="errorBarcode1" name="errorBarcode1"  style="display: none; color: red">Barcode does not exist</label>
       </div>
 
-      <button type="button" class="btn btn-outline-secondary btnAddBar" style="display: none">Add Another Barcode</button>
+      <button type="button" id="addInput" class="btn btn-outline-secondary btnAddBar" style="display: none">Add Another Barcode</button>
       <br><br>
       <!-- Student ID -->
       <div class="form-group">
@@ -164,6 +163,7 @@ $(function () {
 // set studentIDs and equipment barcodes for validating input fields
 var studentID=<?php echo json_encode($new_id); ?>;
 var equipBar=<?php echo json_encode($new_barcode); ?>;
+console.log(equipBar);
 
 // var for created input
 var btnClick = 2;
@@ -181,12 +181,14 @@ var regexBarcode = /[^A-Z0-9\-\_]/g;
 // regex allows numbers
 var regexID = /[^0-9]/g;
 
+// TODO: Added input fields do not post the the database
+// NOTE: Only the first input(Not generated) get posted to database
 // Create input and label when add another barcode
-$("button").click(function(){
+$("#addInput").click(function(){
   temp++;
   $(".btnAddBar").hide();
   $('<div id="tempBarcode'+btnClick+'"></div>').append(
-    $('<input id="barcode'+btnClick+'" name="barcode[]" value="<?php set_value('barcode') ?>" class="form-control cBarcode inpVal" type="text" autocomplete="off"></input>').blur(function(){
+    $('<input id="barcode'+btnClick+'" name="barcode[]" class="form-control cBarcode inpVal" type="text" autocomplete="off"></input>').blur(function(){
 
       // Get value of input field and compare to regex and if not met clear field
       $(this).val($(this).val().replace(regexBarcode, ''));
@@ -232,6 +234,45 @@ $("button").click(function(){
       })
     })
   ).appendTo('#form');
+  // Make delete button
+  $('#tempBarcode'+btnClick).append('<button type="button" id="deleteBarcode'+btnClick+'" class="btn btn-outline-secondary delBtn " style="display: inline-block;">X</button>');
+  // button click of class delBtn
+  $(".delBtn").click(function(e){
+    // Get id of button clicked
+    var idClicked = e.target.id;
+    // get last index of button
+    var btnID = idClicked.slice(-1);
+
+    var delBarVal = $("#barcode"+btnID).val();
+    // delete input, label, and button
+    document.getElementById("tempBarcode"+btnID).remove();
+    // edit arrays
+    for( var i = 0; i < inputValues.length; i++){
+      if ( inputValues[i] === delBarVal) {
+        inputValues.splice(i, 1);
+        isArrEquipBar.splice((i-1),1);
+      }
+    }
+    // inputValues[btnID - 1] = name;
+    // isArrEquipBar[btnID - 2] = true;
+    $(".btnAddBar").show();
+  });
+
+  // if user goes into input field
+  $("#barcode" + btnClick).click(function(e){
+
+    var currBarID = e.target.id.slice(-1);
+    // if barcode is valid
+    if(isArrEquipBar[currBarID-2] == true){
+      // shoe dialog
+      if (confirm("Are you sure that you want to change "+ currBarID + " Equipment Barcode?")) {
+        $(this).val("");
+      } else {
+        $(this).blur();
+      }
+    }
+  });
+
   // Make barcide
   $('#tempBarcode'+btnClick).append('<label class="cError" id="errorBarcode'+btnClick+'" name="errorBarcode'+btnClick+'"  style="display: none; color: red">Barcode does not exist</label>');
   btnClick++;
@@ -267,10 +308,6 @@ $("#student_id").blur(function() {
     isStudentID = true;
   }
 });
-
-// TODO: On Generated barcodes ask the user if they would like to delete the
-// TODO: the information in the input field
-
 
 // if user goes into input field
 $("#barcode").focus(function(){
